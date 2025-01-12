@@ -155,7 +155,7 @@ class RobotEvaluator():
         times = []
         results = []
         s = time.time()
-        results, observations, positions = eval(candidates, "utils/utils_9/" + self.config["map"], self.config, False)
+        results, observations, positions = eval(candidates, "utils/utils/" + self.config["map"], self.config, False)
         fitness = []
         for i in np.arange(len(candidates)):
             distanceToTarget = results[i]
