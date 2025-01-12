@@ -19,8 +19,8 @@ HEIGHT = config["image"]["height"]
 CAR_SIZE_X = 30
 CAR_SIZE_Y = 30
 
-BORDER_COLOR = (0, 0, 0, 255)  # Color To Crash on Hit
-OBJ_COLOR = (45, 157, 10, 255)
+BORDER_COLOR = config["color"]["border"] # Color To Crash on Hit
+OBJ_COLOR = config["color"]["target"]
 current_generation = 0  # Generation counter
 pygame.init()
 bck_driver = pygame.display.get_driver()
