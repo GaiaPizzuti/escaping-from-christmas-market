@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from random import Random
 import time
 
@@ -11,6 +9,7 @@ import inspyred
 import matplotlib
 import numpy as np
 import pickle
+
 from utils.utils_9.network import NN
 from pylab import *
 
