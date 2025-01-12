@@ -6,3 +6,6 @@ sys
 os 
 random
 time
+matplotlib
+inspyred
+pickle
