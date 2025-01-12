@@ -9,12 +9,7 @@ import inspyred
 import matplotlib
 import numpy as np
 import pickle
-<<<<<<< HEAD
 from utils.utils.network import NN
-=======
-
-from utils.utils_9.network import NN
->>>>>>> 6478ab37b5a09dd5a2e673bc0282afab3b6807f1
 from pylab import *
 
 from utils.utils.plot_utils import *
