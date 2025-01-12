@@ -10,8 +10,8 @@ import pygame
 import numpy as np
 import time
 
-WIDTH = 1920
-HEIGHT = 1080
+WIDTH = 990
+HEIGHT = 1280
 
 CAR_SIZE_X = 30
 CAR_SIZE_Y = 30
