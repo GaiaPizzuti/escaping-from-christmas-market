@@ -30,30 +30,51 @@ pygame.quit()
 class Car:
     
     def __init__(self):
-        # Load Car Sprite and Rotate
-        self.sprite = pygame.image.load('utils/car.png').convert()  # Convert Speeds Up A Lot
+        # Caricare il car sprite
+        self.sprite = pygame.image.load(car_image_path).convert()  # Caricamento immagine auto
         self.sprite = pygame.transform.scale(self.sprite, (CAR_SIZE_X, CAR_SIZE_Y))
         self.rotated_sprite = self.sprite
         
-        # self.position = [690, 740] # Starting Position
-        self.position = [200, 900]  # Starting Position
+        # Posizione iniziale
+        self.position = [0, 0]  # La aggiorneremo con una posizione casuale
         self.angle = 0
         self.speed = 0
-        
-        self.speed_set = False  # Flag For Default Speed Later on
-        
-        self.center = [self.position[0] + CAR_SIZE_X / 2, self.position[1] + CAR_SIZE_Y / 2]  # Calculate Center
-        
-        self.radars = []  # List For Sensors / Radars
-        self.drawing_radars = []  # Radars To Be Drawn
-        
-        self.collision = False  # Boolean To Check If Car is Crashed
-        
-        self.distance = 0  # Distance Driven
-        self.time = 0  # Time Passed
+        self.speed_set = False
+
+        # Centro calcolato
+        self.center = [self.position[0] + CAR_SIZE_X / 2, self.position[1] + CAR_SIZE_Y / 2]
+
+        # Altri attributi
+        self.radars = []
+        self.drawing_radars = []
+        self.collision = False
+        self.distance = 0
+        self.time = 0
         self.times = 0.
-        
         self.time_from_collision = 0
+
+        # Carica l'immagine della pista
+        self.track_image = Image.open(track_image_path).convert("RGB")
+        self.width, self.height = self.track_image.size
+
+        # Imposta una posizione casuale
+        self.set_random_position()
+
+    def is_white(self, pixel):
+        """Controlla se un pixel è bianco."""
+        r, g, b = pixel
+        return r == 255 and g == 255 and b == 255
+
+    def set_random_position(self):
+        """Trova e imposta una posizione casuale su un pixel bianco."""
+        while True:
+            x = random.randint(0, self.width - 1)
+            y = random.randint(0, self.height - 1)
+            pixel = self.track_image.getpixel((x, y))
+            if self.is_white(pixel):
+                self.position = [x, y]
+                self.center = [x + CAR_SIZE_X / 2, y + CAR_SIZE_Y / 2]  # Aggiorna il centro
+                break
     
     def draw(self, screen):
         screen.blit(self.rotated_sprite, self.position)  # Draw Sprite
