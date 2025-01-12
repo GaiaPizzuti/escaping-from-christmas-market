@@ -11,15 +11,15 @@ import inspyred
 import matplotlib
 import numpy as np
 import pickle
-from utils.utils_9.network import NN
+from utils.utils.network import NN
 from pylab import *
 
-from utils.utils_9.plot_utils import *
+from utils.utils.plot_utils import *
 
 from inspyred import ec
-from utils.utils_9.inspyred_utils import NumpyRandomWrapper
+from utils.utils.inspyred_utils import NumpyRandomWrapper
 
-from utils.utils_9.car import *
+from utils.utils.car import *
 import os
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
@@ -157,7 +157,7 @@ class RobotEvaluator():
         times = []
         results = []
         s = time.time()
-        results, observations, positions = eval(candidates, "utils/utils_9/" + self.config["map"], self.config, False)
+        results, observations, positions = eval(candidates, "utils/utils/" + self.config["map"], self.config, False)
         fitness = []
         for i in np.arange(len(candidates)):
             distanceToTarget = results[i]
