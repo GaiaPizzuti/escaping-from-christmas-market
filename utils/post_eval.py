@@ -2,7 +2,7 @@
 import sys
 import pickle 
 import os 
-from utils.utils.exercise_maze import *
+from utils.exercise_maze import *
 
 if __name__ =="__main__":
     fname = sys.argv[1]
