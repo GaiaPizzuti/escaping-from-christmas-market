@@ -1,0 +1,8 @@
+yaml
+numpy
+math
+pygame
+sys 
+os 
+random
+time

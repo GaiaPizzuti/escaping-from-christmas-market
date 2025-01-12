@@ -5,13 +5,16 @@ import math
 import random
 import sys
 import os
-
+import yaml
 import pygame
 import numpy as np
 import time
 
-WIDTH = 990
-HEIGHT = 1280
+with open(args.config, "r") as f:
+    config = yaml.safe_load(f)
+
+WIDTH = config["image"]["width"]
+HEIGHT = config["image"]["height"]
 
 CAR_SIZE_X = 30
 CAR_SIZE_Y = 30
