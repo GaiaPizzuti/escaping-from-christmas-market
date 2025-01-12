@@ -11,15 +11,15 @@ import inspyred
 import matplotlib
 import numpy as np
 import pickle
-from utils.utils_9.network import NN
+from utils.utils.network import NN
 from pylab import *
 
-from utils.utils_9.plot_utils import *
+from utils.utils.plot_utils import *
 
 from inspyred import ec
-from utils.utils_9.inspyred_utils import NumpyRandomWrapper
+from utils.utils.inspyred_utils import NumpyRandomWrapper
 
-from utils.utils_9.car import *
+from utils.utils.car import *
 import os
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
