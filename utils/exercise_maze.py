@@ -19,7 +19,7 @@ from utils.plot_utils import *
 from inspyred import ec
 from utils.inspyred_utils import NumpyRandomWrapper
 
-from utils.car import *
+from tourist import *
 import os
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
