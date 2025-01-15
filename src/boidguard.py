@@ -52,27 +52,42 @@ class BoidGuard(GuardRules):
     def is_border(self, position):
         return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1
     
-    def update(self, boidguards, ALIGNMENT, COHESION, SEPARATION): #############
-        
-        # ant in the range
-        neighbors = GuardRules.find_neighbors(self, boidguards)
+    def update(self, boidguards, target_positions):
+        """
+        Aggiorna la velocità e la posizione del Boid Guard per muoversi verso il target più vicino.
 
-        # alignment
-        alignment = ALIGNMENT * self.velocity
-        # cohesion
-        cohesion = COHESION * GuardRules.fly_towards_center(self, neighbors)
-        # separation
-        separation = SEPARATION * GuardRules.keep_distance_away(self, neighbors)
+        :param boidguards: Lista di altri Boid Guards (non utilizzata in questa versione)
+        :param target_positions: Lista delle posizioni dei target (vetrici 2D)
+        """
+        if not target_positions:
+            print("No target found")
+            return  # Esci dalla funzione se non ci sono target
 
-        # update velocity
-        self.velocity += alignment + cohesion + separation
+        # Trova il target più vicino
+        closest_target = min(target_positions, key=lambda pos: (self.position - pos).length())
 
-        # limit the speed of the boids
+        # Calcola la direzione verso il target più vicino
+        direction = closest_target - self.position
+
+        # Normalizza la direzione per ottenere un vettore unitario
+        if direction.length() != 0:
+            direction = direction.normalize()
+
+        # Aggiorna la velocità, scalata da un fattore di velocità
+        speed_factor = 2  # Velocità di movimento del Boid Guard
+        self.velocity += direction * speed_factor
+
+        # Limita la velocità per evitare movimenti eccessivi
+        max_speed = 5
+        if self.velocity.length() > max_speed:
+            self.velocity = self.velocity.normalize() * max_speed
+
+        # Limita la velocità
         self.velocity.scale_to_length(5)
 
-
-        # update position
+        # Aggiorna la posizione
         self.position += self.velocity
 
-        # wrap the position of the boidguard
+        # Avvolge la posizione del Boid Guard (se è fuori dai confini)
         GuardRules.bound_position(self)
+

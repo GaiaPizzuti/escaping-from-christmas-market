@@ -5,7 +5,7 @@ import pygame as pg
 
 from boid import Boid
 from boidguard import BoidGuard
-from utils.utils import get_config, find_target_position
+from utils.utils import get_config, find_target_positions
 
 
 def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGET):
@@ -39,7 +39,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
         for boidg in boidguards:
             boidg.draw(screen)
-            boidg.update(boidguards, alignment, cohesion, separation)
+            boidg.update(boidguards, TARGET)
 
         # update the screen
         pg.display.flip()
@@ -54,6 +54,6 @@ if __name__ == "__main__":
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     image = pg.image.load(MAP).convert()
     
-    TARGET = find_target_position(image, OBJ_COLOR)
+    TARGET = find_target_positions(image, OBJ_COLOR)
     
     run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION, TARGET)
