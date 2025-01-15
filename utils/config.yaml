@@ -10,6 +10,11 @@ color:
   target: (125, 197, 53, 255)
   target-hex: "#7dc535"
 
+parameters:
+  alignment: 0.5
+  cohesion: 0.5
+  separation: 0.5
+  
 people:
    num: 10
 

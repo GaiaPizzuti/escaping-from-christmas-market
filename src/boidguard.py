@@ -74,5 +74,5 @@ class BoidGuard(GuardRules):
         # update position
         self.position += self.velocity
 
-        # wrap the position of the boidù
+        # wrap the position of the boidguard
         GuardRules.bound_position(self)
