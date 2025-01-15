@@ -16,8 +16,9 @@ BORDER_COLOR = config["color"]["border"]
 OBJ_COLOR = config["color"]["target"]
 
 MAP = config["image"]["path"]
+BOIDS = config["people"]["num"]
 
-def run(WIDTH, HEIGHT, num, alignment, cohesion, separation):
+def run(WIDTH, HEIGHT, BOIDS, alignment, cohesion, separation):
     pg.init()
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     image = pg.image.load(MAP).convert()
@@ -28,7 +29,7 @@ def run(WIDTH, HEIGHT, num, alignment, cohesion, separation):
     clock = pg.time.Clock()
 
     # create boids
-    boids = [Boid(WIDTH, HEIGHT) for _ in range(num)]
+    boids = [Boid(WIDTH, HEIGHT) for _ in range(BOIDS)]
 
     running = True
     while running:
@@ -45,4 +46,4 @@ def run(WIDTH, HEIGHT, num, alignment, cohesion, separation):
     pg.quit()
 
 if __name__ == "__main__":
-    run(WIDTH, HEIGHT, 10, 0.5, 0.5, 0.5)
+    run(WIDTH, HEIGHT, BOIDS, 0.5, 0.5, 0.5)

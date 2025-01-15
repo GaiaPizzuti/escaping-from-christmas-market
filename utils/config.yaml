@@ -1,6 +1,6 @@
 image: 
-  height: 1280
-  width: 990
+  height: 720
+  width: 558
   path: "./data/Map_WO_obstacle.jpg"
   #path: "./data/Map_WITH_obstacle.jpg"
 
@@ -10,7 +10,7 @@ color:
   target: (125, 197, 53, 255)
 
 people:
-   num: 
+   num: 100
 
 
 
