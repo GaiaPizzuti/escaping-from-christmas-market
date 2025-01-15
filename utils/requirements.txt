@@ -1,11 +1,6 @@
 pyyaml
 numpy
-math
 pygame
-sys 
-os 
-random
-time
 matplotlib
 inspyred
-pickle
+
