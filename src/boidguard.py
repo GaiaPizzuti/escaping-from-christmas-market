@@ -9,6 +9,7 @@ with open("utils/config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 MAP = config["image"]["path"]
+GREEN = config["color"]["target-hex"]
 
 class BoidGuard(GuardRules):
 
@@ -39,6 +40,17 @@ class BoidGuard(GuardRules):
     
     def draw(self, screen):
         pg.draw.circle(screen, 'blue', self.position, 5)
+
+    def is_black(self, position):
+        if position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1:
+            return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
+        return True
+    
+    def is_green(self, position):
+        return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
+    
+    def is_border(self, position):
+        return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1
     
     def update(self, boidguards, ALIGNMENT, COHESION, SEPARATION): #############
         
@@ -52,9 +64,12 @@ class BoidGuard(GuardRules):
         # separation
         separation = SEPARATION * GuardRules.keep_distance_away(self, neighbors)
 
+        # update velocity
+        self.velocity += alignment + cohesion + separation
 
         # limit the speed of the boids
         self.velocity.scale_to_length(5)
+
 
         # update position
         self.position += self.velocity

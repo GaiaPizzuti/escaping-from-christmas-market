@@ -9,7 +9,7 @@ with open("utils/config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 MAP = config["image"]["path"]
-GREEN = config["color"]["target"]
+GREEN = config["color"]["target-hex"]
 
 class Boid(Rules):
 
@@ -41,18 +41,20 @@ class Boid(Rules):
             position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
             print(position)
         return position
-    
-    def is_border(self):
-        return self.position.x == 0 or self.position.y == 0 or self.position.x == self.width - 1 or self.position.y == self.height - 1
 
     def draw(self, screen):
         pg.draw.circle(screen, 'red', self.position, 5)
     
-    def is_black(self):
-        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color('black')
+    def is_black(self, position):
+        if position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1:
+            return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
+        return True
     
-    def is_green(self):
-        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color('green')
+    def is_green(self, position):
+        return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
+    
+    def is_border(self, position):
+        return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y > self.height - 1
     
     def update(self, boids, ALIGNMENT, COHESION, SEPARATION):
         
@@ -69,19 +71,11 @@ class Boid(Rules):
         # update velocity
         self.velocity += alignment + cohesion + separation
 
-        # check if the new position is black
-        if self.is_border() or self.is_black():
-            # send the boid back
-            self.velocity = -self.velocity
+        # limit the speed of the boids
+        self.velocity.scale_to_length(2)
 
-        # check if the new position is green
-        if not self.is_green():
+        # update position
+        self.position += self.velocity
 
-            # limit the speed of the boids
-            self.velocity.scale_to_length(5)
-            
-            # update position
-            self.position += self.velocity
-
-            # wrap the position of the boidù
-            Rules.bound_position(self)
+        # wrap the position of the boid
+        Rules.bound_position(self)

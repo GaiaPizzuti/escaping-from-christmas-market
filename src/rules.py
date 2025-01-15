@@ -100,6 +100,7 @@ class GuardRules():
         if self.position.y > self.height - margin:
             self.velocity += pg.Vector2(0, -0.7)
         if self.position.y < margin:
-            self.velocity += pg.Vector2(0, 0.7)    
+            self.velocity += pg.Vector2(0, 0.7)
+        
 
     
