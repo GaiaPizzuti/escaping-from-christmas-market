@@ -26,24 +26,40 @@ class Boid(Rules):
         # initial random velocity of the boid
         self.velocity = pg.Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
 
-        # radius of the ant
+        # radius of the boid
         self.radius = 50
     
     def set_position(self):
-        position = pg.Vector2(random.randint(0, self.width), random.randint(0, self.height))
+        position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
         
         # check if the pixel is white
         while self.image.get_at((int(position.x), int(position.y))) != pg.Color('white'):
-            position = pg.Vector2(random.randint(0, self.width), random.randint(0, self.height))
+            position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
         return position
     
     def draw(self, screen):
         pg.draw.circle(screen, 'red', self.position, 5)
     
-    def update(self, boid, alignment, cohesion, separation):
+    def update(self, boids, ALIGNMENT, COHESION, SEPARATION):
         
         # ant in the range
-        neighbors = Rules.find_neighbors(self, boid)
+        neighbors = Rules.find_neighbors(self, boids)
 
         # alignment
-        alignment = Rules.match_velocity(self, neighbors)
+        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors)
+        # cohesion
+        cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
+        # separation
+        separation = SEPARATION * Rules.keep_distance_away(self, neighbors)
+
+        # update velocity
+        self.velocity += alignment + cohesion + separation
+
+        # limit the speed of the boids
+        self.velocity.scale_to_length(5)
+
+        # update position
+        self.position += self.velocity
+
+        # wrap the position of the boidù
+        Rules.bound_position(self)

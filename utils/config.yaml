@@ -1,6 +1,6 @@
 image: 
   height: 720
-  width: 558
+  width: 557
   path: "./data/Map_WO_obstacle.jpg"
   #path: "./data/Map_WITH_obstacle.jpg"
 

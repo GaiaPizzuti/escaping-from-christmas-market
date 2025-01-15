@@ -37,10 +37,14 @@ def run(WIDTH, HEIGHT, BOIDS, alignment, cohesion, separation):
             if event.type == pg.QUIT:
                 running = False
 
-        for boid in boids:
-            boid.update(boids, alignment, cohesion, separation)
-            boid.draw(screen)
+        # reset the initial map
+        screen.blit(image, (0, 0))
 
+        for boid in boids:
+            boid.draw(screen)
+            boid.update(boids, alignment, cohesion, separation)
+
+        # update the screen
         pg.display.flip()
         clock.tick(60)
     pg.quit()
