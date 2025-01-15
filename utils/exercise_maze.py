@@ -29,6 +29,10 @@ HEIGHT = 1080
 TARGET_DIST_THR = 32  # / 1080 # sqrt(WIDTH**2 + HEIGHT**2)
 TARGET_POS = [1730, 165]
 
+sys.path.append(".")
+with open("utils/config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+MAP = config["image"]["path"]
 
 def readConfigFile(file):
     myvars = {}
@@ -157,7 +161,7 @@ class RobotEvaluator():
         times = []
         results = []
         s = time.time()
-        results, observations, positions = eval(candidates, "utils/" + self.config["map"], self.config, False)
+        results, observations, positions = eval(candidates, MAP, self.config, False)
         fitness = []
         for i in np.arange(len(candidates)):
             distanceToTarget = results[i]

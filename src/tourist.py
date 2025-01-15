@@ -10,17 +10,17 @@ import pygame
 import numpy as np
 import time
 
-with open(args.config, "r") as f:
+sys.path.append(".")
+
+with open("utils/config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 WIDTH = config["image"]["width"]
 HEIGHT = config["image"]["height"]
-
-CAR_SIZE_X = 30
-CAR_SIZE_Y = 30
-
 BORDER_COLOR = config["color"]["border"] # Color To Crash on Hit
 OBJ_COLOR = config["color"]["target"]
+
+MAP = config["image"]["path"]
 current_generation = 0  # Generation counter
 pygame.init()
 bck_driver = pygame.display.get_driver()
@@ -31,18 +31,13 @@ class Car:
     
     def __init__(self):
         # Caricare il car sprite
-        self.sprite = pygame.image.load(car_image_path).convert()  # Caricamento immagine auto
-        self.sprite = pygame.transform.scale(self.sprite, (CAR_SIZE_X, CAR_SIZE_Y))
-        self.rotated_sprite = self.sprite
+        self.sprite = pygame.image.load(MAP).convert()  # Caricamento immagine auto
         
         # Posizione iniziale
         self.position = [0, 0]  # La aggiorneremo con una posizione casuale
         self.angle = 0
         self.speed = 0
         self.speed_set = False
-
-        # Centro calcolato
-        self.center = [self.position[0] + CAR_SIZE_X / 2, self.position[1] + CAR_SIZE_Y / 2]
 
         # Altri attributi
         self.radars = []
