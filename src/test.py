@@ -45,7 +45,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation):
 
         for boid in boids:
             boid.draw(screen)
-            boid.update(boids, alignment, cohesion, separation)
+            boid.update(boids, boidguards, alignment, cohesion, separation)
 
 
         for boidg in boidguards:

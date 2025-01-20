@@ -54,13 +54,16 @@ class Boid(Rules):
     def is_green(self):
         return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color('green')
     
-    def update(self, boids, ALIGNMENT, COHESION, SEPARATION):
+    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION):
         
-        # ant in the range
-        neighbors = Rules.find_neighbors(self, boids)
+        # boid in the range
+        neighbors = Rules.find_neighbors(self, boids, boidguards)
+
+        # boidguards in range
+        GUARDneighbors = Rules.find_neighbors_boidguards(self,boidguards)
 
         # alignment
-        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors)
+        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors)
         # cohesion
         cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
         # separation
