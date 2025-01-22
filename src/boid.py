@@ -11,6 +11,7 @@ with open("utils/config.yaml", "r") as f:
 
 MAP = config["image"]["path"]
 GREEN = config["color"]["target-hex"]
+BLACK = config["color"]["obstacle-hex"]
 
 class Boid(Rules):
 
@@ -63,9 +64,22 @@ class Boid(Rules):
         
         return avoidance_force
     
+    def is_any_black(self, position):
+        """
+        For every pixel between the boid's position and the target position, check if it is black.
+        """
+        direction = (self.position - position).normalize()
+        distance = int(self.position.distance_to(position))
+
+        for i in range(distance):
+            check_position = self.position + direction * i
+            if self.is_black(check_position):
+                return True
+        return False
+
     def is_black(self, position):
         if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
-            return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
+            return self.image.get_at((int(position.x), int(position.y))) == pg.Color(BLACK)
         return False
     
     def is_green(self, position):
@@ -89,7 +103,7 @@ class Boid(Rules):
         possible_velocity = self.velocity + alignment + cohesion + separation
         possible_position = self.position + possible_velocity
 
-        if self.is_black(possible_position):
+        if self.is_any_black(possible_position):
             # avoid obstacles
             avoidance_force = self.avoid_obstacles()
             self.velocity += avoidance_force
@@ -109,4 +123,3 @@ class Boid(Rules):
         if self.is_green(self.position):
             print("Target reached")
             self.reached = True
-            self.velocity = pg.Vector2(0, 0)

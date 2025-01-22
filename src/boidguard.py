@@ -91,4 +91,3 @@ class BoidGuard(GuardRules):
 
         if self.is_green(self.position):
             self.reached = True
-            self.velocity = pg.Vector2(0, 0)
