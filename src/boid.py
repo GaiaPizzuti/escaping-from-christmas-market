@@ -65,9 +65,7 @@ class Boid(Rules):
         return False
     
     def is_green(self, position):
-        if position.x > 0 and position.y > 0 and position.x < self.width - 100 and position.y < self.height - 100:
-            return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
-        return False
+        return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
     
     def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION):
         
