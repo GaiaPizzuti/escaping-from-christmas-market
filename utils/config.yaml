@@ -1,15 +1,23 @@
 image: 
   height: 720
   width: 557
-  path: "./data/Map_WO_obstacle.jpg"
+  path: "./data/prova.png"
+  #path: "./data/Map_WO_obstacle.jpg"
   #path: "./data/Map_WITH_obstacle.jpg"
 
 color: 
   obstacle: (0, 0, 0, 255) 
+  obstacle-hex: "#000000"
+  border-hex: "#000000"
   border: (0, 0, 0, 255) 
-  target: (125, 197, 53, 255)
-  target-hex: "#7DC535"
+  target: (64, 166, 74, 225)
+  target-hex: "#40a64a"
 
+parameters:
+  alignment: 0.5
+  cohesion: 0.5
+  separation: 0.5
+  
 people:
    num: 100
 

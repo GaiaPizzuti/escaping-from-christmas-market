@@ -50,55 +50,44 @@ class BoidGuard(GuardRules):
         return False
     
     def is_green(self, position):
-        if position.x > 0 and position.y > 0 and position.x < self.width - 100 and position.y < self.height - 100:
-            return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
-        return False
+        return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
     
-    def avoid_obstacles(self):
-        # base direction
-        avoidance_force = pg.Vector2(0, 0)
-
-        # check the other directions
-        for angle in range(0, 360, 45):
-            direction = self.velocity.rotate(angle)
-            check_position = self.position + direction.normalize() * self.radius
-
-            if self.is_black(check_position):
-                # invert the direction to avoid the obstacle
-                avoidance_force += -direction
-        
-        return avoidance_force
+    def is_border(self, position):
+        return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1
     
-    def update(self, boids, ALIGNMENT, COHESION, SEPARATION):
-        
-        # ant in the range
-        neighbors = GuardRules.find_neighbors(self, boids)
+    def update(self, boidguards, target_positions):
+        if not target_positions:
+            #print("No target found")
+            return  # Esci dalla funzione se non ci sono target
 
-        # alignment
-        alignment = ALIGNMENT * self.velocity
+        # Trova il target più vicino
+        closest_target = min(target_positions, key=lambda pos: (self.position - pos).length())
 
-        # cohesion
-        cohesion = COHESION * GuardRules.fly_towards_center(self, neighbors)
+        # Calcola la direzione verso il target più vicino
+        direction = closest_target - self.position
 
-        # separation
-        separation = SEPARATION * GuardRules.keep_distance_away(self, neighbors)
+        # Normalizza la direzione per ottenere un vettore unitario
+        if direction.length() != 0:
+            direction = direction.normalize()
 
-        possible_velocity = self.velocity + alignment + cohesion + separation
-        possible_position = self.position + possible_velocity
+        # Aggiorna la velocità, scalata da un fattore di velocità
+        speed_factor = 2  # Velocità di movimento del Boid Guard
+        self.velocity += direction * speed_factor
 
-        if self.is_black(possible_position):
-            # avoid obstacles
-            avoidance_force = self.avoid_obstacles()
-            self.velocity += avoidance_force
-        
-        # limit the speed of the boids
-        self.velocity.scale_to_length(2)
-        
-        # update position
+        # Limita la velocità per evitare movimenti eccessivi
+        max_speed = 0.5
+        if self.velocity.length() > max_speed:
+            self.velocity = self.velocity.normalize() * max_speed
+
+        # Limita la velocità
+        self.velocity.scale_to_length(0.3)
+
+        # Aggiorna la posizione
         self.position += self.velocity
 
         # wrap the position of the boid
         GuardRules.bound_position(self)
+
 
         if self.is_green(self.position):
             self.reached = True

@@ -6,23 +6,12 @@ import numpy as np
 
 from boid import Boid
 from boidguard import BoidGuard
+from utils.utils import get_config, find_target_positions
 
-sys.path.append(".")
 
-with open("utils/config.yaml", "r") as f:
-    config = yaml.safe_load(f)
-
-WIDTH = config["image"]["width"]
-HEIGHT = config["image"]["height"]
-BORDER_COLOR = config["color"]["border"]
-OBJ_COLOR = config["color"]["target"]
-
-MAP = config["image"]["path"]
-BOIDS = config["people"]["num"]
-BOIDGUARDS = config["security"]["nums"]
-
-def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation):
+def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGET):
     pg.init()
+
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     image = pg.image.load(MAP).convert()
     pg.display.set_caption("Boids")
@@ -54,7 +43,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation):
 
         for boidg in boidguards:
             boidg.draw(screen)
-            boidg.update(boidguards, alignment, cohesion, separation)
+            boidg.update(boidguards, TARGET)
             if boidg.reached:
                 print("BoidGuard reached the target")
                 boidguards.remove(boidg)
@@ -65,4 +54,13 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation):
     pg.quit()
 
 if __name__ == "__main__":
-    run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, 0.5, 0.5, 0.5)
+    WIDTH, HEIGHT, BORDER_COLOR, OBJ_COLOR, MAP, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION = get_config()
+    
+    #Questo l'ho tolto dalla run function
+    pg.init()
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    image = pg.image.load(MAP).convert()
+    
+    TARGET = find_target_positions(image, OBJ_COLOR, WIDTH, HEIGHT)
+    
+    run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION, TARGET)
