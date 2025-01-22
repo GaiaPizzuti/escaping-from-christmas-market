@@ -2,6 +2,7 @@ import sys
 import yaml
 import random
 import pygame as pg
+import numpy as np
 
 from boid import Boid
 from boidguard import BoidGuard

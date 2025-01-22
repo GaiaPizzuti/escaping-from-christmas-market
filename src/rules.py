@@ -1,4 +1,5 @@
 import pygame as pg
+import numpy as np
 
 class Rules():
 
@@ -32,8 +33,9 @@ class Rules():
         return neighborsguard
     
     # alignment, ants try to match the velocity of their neighbors
-    def match_velocity(self, boids, boidguards, k = 0):
+    def match_velocity(self, boids, boidguards):
         velocity = pg.Vector2(0, 0)
+        k = self.discipline
 
         for boid in boids:
             velocity += boid.velocity
