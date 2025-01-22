@@ -35,6 +35,7 @@ def find_target_positions(screen, target_color):
                     pixels_to_check.append((px, py - 1))
                 if py < screen.get_height() - 1:
                     pixels_to_check.append((px, py + 1))
+                
 
         return group_pixels
 
@@ -61,7 +62,7 @@ def get_config():
     WIDTH = config["image"]["width"]
     HEIGHT = config["image"]["height"]
     BORDER_COLOR = config["color"]["border"]
-    OBJ_COLOR = config["color"]["target"]
+    OBJ_COLOR = config["color"]["target-hex"]
     MAP = config["image"]["path"]
 
     BOIDS = config["people"]["num"]

@@ -55,7 +55,7 @@ class BoidGuard(GuardRules):
     def is_border(self, position):
         return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1
     
-    def update(self, boidguards, target_positions):
+    def update(self, target_positions):
         """
         Aggiorna la velocità e la posizione del Boid Guard per muoversi verso il target più vicino.
 
