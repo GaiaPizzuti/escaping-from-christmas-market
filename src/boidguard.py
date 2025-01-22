@@ -29,6 +29,9 @@ class BoidGuard(GuardRules):
 
         # radius of the boid
         self.radius = 50
+
+        # boolean to check if the boid has reached the target
+        self.reached = False
     
     def set_position(self):
         position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
@@ -42,9 +45,9 @@ class BoidGuard(GuardRules):
         pg.draw.circle(screen, 'blue', self.position, 5)
 
     def is_black(self, position):
-        if position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1:
+        if position.x > 0 and position.y > 0 and position.x < self.width - 100 and position.y < self.height - 100:
             return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
-        return True
+        return False
     
     def is_green(self, position):
         return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
@@ -88,6 +91,10 @@ class BoidGuard(GuardRules):
         # Aggiorna la posizione
         self.position += self.velocity
 
-        # Avvolge la posizione del Boid Guard (se è fuori dai confini)
+        # wrap the position of the boidù
         GuardRules.bound_position(self)
 
+
+        if self.is_green(self.position):
+            self.reached = True
+            self.velocity = pg.Vector2(0, 0)

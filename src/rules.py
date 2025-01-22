@@ -7,23 +7,40 @@ class Rules():
         self.width = WIDTH
         self.height = HEIGHT
 
-    # ant rules
+    # boid rules
 
-    def find_neighbors(self, boids):
+    def find_neighbors(self, boids, boidguards):
         neighbors = []
         for boid in boids:
             if boid.position != self.position:
                 if self.position.distance_to(boid.position) < self.radius:
                     neighbors.append(boid)
+
+        for boidg in boidguards:
+            if boidg.position != self.position:
+                if self.position.distance_to(boidg.position) < self.radius:
+                    neighbors.append(boidg)
+
         return neighbors
 
+    def find_neighbors_boidguards(self,boidguards):
+        neighborsguard = []
+        for boidg in boidguards:
+            if boidg.position != self.position:
+                if self.position.distance_to(boidg.position) < self.radius:
+                    neighborsguard.append(boidg)
+        return neighborsguard
+    
     # alignment, ants try to match the velocity of their neighbors
-    def match_velocity(self, boids):
+    def match_velocity(self, boids, boidguards, k = 0):
         velocity = pg.Vector2(0, 0)
-        for ant in boids:
-            velocity += ant.velocity
+
+        for boid in boids:
+            velocity += boid.velocity
+        for guards in boidguards:
+            velocity += guards.velocity*k
         if len(boids) > 1:
-            velocity /= len(boids)
+            velocity /= (len(boids) + len(boidguards)*k)
             return (velocity - self.velocity) / 8
         return pg.Vector2(0, 0)
     
@@ -73,6 +90,7 @@ class GuardRules():
                 if self.position.distance_to(boid.position) < self.radius:
                     neighbors.append(boid)
         return neighbors
+    
     # cohesion, boids try to fly towards the center of mass of neighboring boids
     def fly_towards_center(self, boids):
         center = pg.Vector2(0, 0)

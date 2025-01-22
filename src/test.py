@@ -34,12 +34,18 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
         for boid in boids:
             boid.draw(screen)
-            boid.update(boids, alignment, cohesion, separation)
+            boid.update(boids, boidguards, alignment, cohesion, separation)
+            if boid.reached:
+                print("Boid reached the target")
+                boids.remove(boid)
 
 
         for boidg in boidguards:
             boidg.draw(screen)
             boidg.update(boidguards, TARGET)
+            if boidg.reached:
+                print("BoidGuard reached the target")
+                boidguards.remove(boidg)
 
         # update the screen
         pg.display.flip()
