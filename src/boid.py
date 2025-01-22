@@ -9,7 +9,7 @@ with open("utils/config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 MAP = config["image"]["path"]
-GREEN = config["color"]["target"]
+GREEN = config["color"]["target-hex"]
 
 class Boid(Rules):
 
@@ -29,30 +29,45 @@ class Boid(Rules):
 
         # radius of the boid
         self.radius = 50
+
+        # boolean to check if the boid has reached the target
+        self.reached = False
     
     def set_position(self):
-        print("Setting position")
         position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
-
-        print(position)
         
         # check if the pixel is white
         while self.image.get_at((int(position.x), int(position.y))) != pg.Color('white'):
             position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
-            print(position)
         return position
-    
-    def is_border(self):
-        return self.position.x == 0 or self.position.y == 0 or self.position.x == self.width - 1 or self.position.y == self.height - 1
 
     def draw(self, screen):
         pg.draw.circle(screen, 'red', self.position, 5)
     
-    def is_black(self):
-        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color('black')
+    def avoid_obstacles(self):
+        # base direction
+        avoidance_force = pg.Vector2(0, 0)
+
+        # check the other directions
+        for angle in range(0, 360, 45):
+            direction = self.velocity.rotate(angle)
+            check_position = self.position + direction.normalize() * self.radius
+
+            if self.is_black(check_position):
+                # invert the direction to avoid the obstacle
+                avoidance_force += -direction
+        
+        return avoidance_force
     
-    def is_green(self):
-        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color('green')
+    def is_black(self, position):
+        if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
+            return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
+        return False
+    
+    def is_green(self, position):
+        if position.x > 0 and position.y > 0 and position.x < self.width - 100 and position.y < self.height - 100:
+            return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
+        return False
     
     def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION):
         
@@ -68,23 +83,28 @@ class Boid(Rules):
         cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
         # separation
         separation = SEPARATION * Rules.keep_distance_away(self, neighbors)
+        
+        possible_velocity = self.velocity + alignment + cohesion + separation
+        possible_position = self.position + possible_velocity
+
+        if self.is_black(possible_position):
+            # avoid obstacles
+            avoidance_force = self.avoid_obstacles()
+            self.velocity += avoidance_force
 
         # update velocity
         self.velocity += alignment + cohesion + separation
 
-        # check if the new position is black
-        if self.is_border() or self.is_black():
-            # send the boid back
-            self.velocity = -self.velocity
+        # limit the speed of the boids
+        self.velocity.scale_to_length(2)
+        
+        # update position
+        self.position += self.velocity
 
-        # check if the new position is green
-        if not self.is_green():
+        # wrap the position of the boid
+        Rules.bound_position(self)
 
-            # limit the speed of the boids
-            self.velocity.scale_to_length(5)
-            
-            # update position
-            self.position += self.velocity
-
-            # wrap the position of the boidù
-            Rules.bound_position(self)
+        if self.is_green(self.position):
+            print("Target reached")
+            self.reached = True
+            self.velocity = pg.Vector2(0, 0)

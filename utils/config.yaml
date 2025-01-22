@@ -8,9 +8,10 @@ color:
   obstacle: (0, 0, 0, 255) 
   border: (0, 0, 0, 255) 
   target: (125, 197, 53, 255)
+  target-hex: "#7DC535"
 
 people:
-   num: 10
+   num: 100
 
 security:
    nums: 10
