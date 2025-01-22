@@ -63,7 +63,7 @@ class Boid(Rules):
         GUARDneighbors = Rules.find_neighbors_boidguards(self,boidguards)
 
         # alignment
-        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors)
+        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors, 3)
         # cohesion
         cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
         # separation

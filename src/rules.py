@@ -18,8 +18,8 @@ class Rules():
 
         for boidg in boidguards:
             if boidg.position != self.position:
-                if self.position.distance_to(boidguards.position) < self.radius:
-                    neighbors.append(boidguards)
+                if self.position.distance_to(boidg.position) < self.radius:
+                    neighbors.append(boidg)
 
         return neighbors
 
@@ -27,8 +27,8 @@ class Rules():
         neighborsguard = []
         for boidg in boidguards:
             if boidg.position != self.position:
-                if self.position.distance_to(boidguards.position) < self.radius:
-                    neighborsguard.append(boidguards)
+                if self.position.distance_to(boidg.position) < self.radius:
+                    neighborsguard.append(boidg)
         return neighborsguard
     
     # alignment, ants try to match the velocity of their neighbors
