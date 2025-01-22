@@ -73,6 +73,7 @@ class GuardRules():
                 if self.position.distance_to(boid.position) < self.radius:
                     neighbors.append(boid)
         return neighbors
+    
     # cohesion, boids try to fly towards the center of mass of neighboring boids
     def fly_towards_center(self, boids):
         center = pg.Vector2(0, 0)
@@ -101,6 +102,4 @@ class GuardRules():
             self.velocity += pg.Vector2(0, -0.7)
         if self.position.y < margin:
             self.velocity += pg.Vector2(0, 0.7)
-        
-
     
