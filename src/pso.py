@@ -1,5 +1,5 @@
 from pylab import *
-import utils.utils_06.plot_utils as plot_utils
+import utils.plots as plot_utils
 from inspyred import ec, benchmarks
 
 from inspyred.ec.observers import *
