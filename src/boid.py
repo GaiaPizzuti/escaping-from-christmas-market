@@ -1,5 +1,6 @@
 import pygame as pg
 import random
+import numpy as np
 from rules import Rules
 import sys
 import yaml
@@ -29,6 +30,9 @@ class Boid(Rules):
 
         # radius of the boid
         self.radius = 50
+
+        # set discipline
+        self.discipline = np.random.gamma(shape=2, scale=2)
 
         # boolean to check if the boid has reached the target
         self.reached = False
@@ -78,7 +82,7 @@ class Boid(Rules):
         GUARDneighbors = Rules.find_neighbors_boidguards(self,boidguards)
 
         # alignment
-        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors, 3)
+        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors)
         # cohesion
         cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
         # separation
