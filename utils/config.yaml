@@ -1,7 +1,8 @@
 image: 
   height: 720
   width: 557
-  path: "./data/prova.png"
+  #path: "./data/prova.png"
+  path: "./data/prova_ostacoli.png"
   #path: "./data/Map_WO_obstacle.jpg"
   #path: "./data/Map_WITH_obstacle.jpg"
 
