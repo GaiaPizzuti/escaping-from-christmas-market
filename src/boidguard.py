@@ -55,15 +55,9 @@ class BoidGuard(GuardRules):
     def is_border(self, position):
         return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1
     
-    def update(self, target_positions):
-        """
-        Aggiorna la velocità e la posizione del Boid Guard per muoversi verso il target più vicino.
-
-        :param boidguards: Lista di altri Boid Guards (non utilizzata in questa versione)
-        :param target_positions: Lista delle posizioni dei target (vetrici 2D)
-        """
+    def update(self, boidguards, target_positions):
         if not target_positions:
-            print("No target found")
+            #print("No target found")
             return  # Esci dalla funzione se non ci sono target
 
         # Trova il target più vicino
@@ -81,17 +75,17 @@ class BoidGuard(GuardRules):
         self.velocity += direction * speed_factor
 
         # Limita la velocità per evitare movimenti eccessivi
-        max_speed = 5
+        max_speed = 0.5
         if self.velocity.length() > max_speed:
             self.velocity = self.velocity.normalize() * max_speed
 
         # Limita la velocità
-        self.velocity.scale_to_length(5)
+        self.velocity.scale_to_length(0.3)
 
         # Aggiorna la posizione
         self.position += self.velocity
 
-        # wrap the position of the boidù
+        # wrap the position of the boid
         GuardRules.bound_position(self)
 
 

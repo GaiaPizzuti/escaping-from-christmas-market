@@ -60,6 +60,6 @@ if __name__ == "__main__":
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     image = pg.image.load(MAP).convert()
     
-    TARGET = find_target_positions(image, OBJ_COLOR)
+    TARGET = find_target_positions(image, OBJ_COLOR, WIDTH, HEIGHT)
     
     run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION, TARGET)
