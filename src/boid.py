@@ -65,9 +65,7 @@ class Boid(Rules):
         return avoidance_force
     
     def is_any_black(self, position):
-        """
-        For every pixel between the boid's position and the target position, check if it is black.
-        """
+        
         direction = (self.position - position).normalize()
         distance = int(self.position.distance_to(position))
 
@@ -100,19 +98,20 @@ class Boid(Rules):
         # separation
         separation = SEPARATION * Rules.keep_distance_away(self, neighbors)
         
-        possible_velocity = self.velocity + alignment + cohesion + separation
-        possible_position = self.position + possible_velocity
+        next_velocity = self.velocity + alignment + cohesion + separation       
+        possible_position = self.position + next_velocity
 
         if self.is_any_black(possible_position):
             # avoid obstacles
             avoidance_force = self.avoid_obstacles()
-            self.velocity += avoidance_force
+            next_velocity += avoidance_force
 
         # update velocity
-        self.velocity += alignment + cohesion + separation
+        self.velocity = next_velocity
 
         # limit the speed of the boids
-        self.velocity.scale_to_length(2)
+        if self.velocity.length() > 2:
+            self.velocity.scale_to_length(2)
         
         # update position
         self.position += self.velocity

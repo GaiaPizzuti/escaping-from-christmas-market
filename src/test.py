@@ -3,6 +3,7 @@ import yaml
 import random
 import pygame as pg
 import numpy as np
+import matplotlib.pyplot as plt
 
 from boid import Boid
 from boidguard import BoidGuard
@@ -23,6 +24,12 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
     # create boids
     boids = [Boid(WIDTH, HEIGHT) for _ in range(BOIDS)]
     boidguards = [BoidGuard(WIDTH, HEIGHT) for _ in range(BOIDGUARDS)]
+
+    # Logger per plottare i dati
+    time_log = []           # Tempo simulato
+    boids_log = []          # Numero di boids
+    boidguards_log = []     # Numero di boidguards
+    elapsed_time = 0        # Tempo cumulativo
 
     running = True
     while running:
@@ -52,6 +59,17 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         pg.display.flip()
         clock.tick(60)
     pg.quit()
+
+    # Plot dei dati raccolti
+    plt.figure(figsize=(10, 6))
+    plt.plot(time_log, boids_log, label="Boids", color="blue", linewidth=2)
+    plt.plot(time_log, boidguards_log, label="BoidGuards", color="red", linewidth=2)
+    plt.xlabel("Tempo (s)")
+    plt.ylabel("Numero")
+    plt.title("Evoluzione del numero di Boids e BoidGuards")
+    plt.legend()
+    plt.grid()
+    plt.show()
 
 if __name__ == "__main__":
     WIDTH, HEIGHT, BORDER_COLOR, OBJ_COLOR, MAP, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION = get_config()
