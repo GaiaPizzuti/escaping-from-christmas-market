@@ -27,7 +27,7 @@ def get_config():
     MAP = config["image"]["path"]
 
     BOIDS = config["people"]["num"]
-    BOIDGUARDS = config["security"]["nums"]
+    BOIDGUARDS = round((config["security"]["percentage"] * BOIDS))
 
     ALIGNMENT = config["parameters"]["alignment"]
     COHESION = config["parameters"]["cohesion"]
