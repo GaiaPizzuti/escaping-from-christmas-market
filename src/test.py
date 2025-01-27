@@ -26,10 +26,15 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
     boidguards = [BoidGuard(WIDTH, HEIGHT) for _ in range(BOIDGUARDS)]
 
     # Logger per plottare i dati
-    time_log = []           # Tempo simulato
-    boids_log = []          # Numero di boids
-    boidguards_log = []     # Numero di boidguards
-    elapsed_time = 0        # Tempo cumulativo
+    time_log = []           
+    boids_log = []          
+    boidguards_log = []     
+    elapsed_time = 0        
+
+    interval_data = {
+        30: None, 60: None, 90: None, 120: None, 150: None,
+        180: None, 210: None, 240: None, 270: None, 300: None
+    }
 
     running = True
     while running:
@@ -58,26 +63,46 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         dt = clock.tick(60) / 1000  # Secondi trascorsi in questo frame
         elapsed_time += dt
 
-        # Raccogli i dati
+        # Collect data
         time_log.append(elapsed_time)
         boids_log.append(len(boids))
         boidguards_log.append(len(boidguards))
 
-        # update the screen
+        for t in interval_data.keys():
+            if interval_data[t] is None and elapsed_time >= t:
+                interval_data[t] = (len(boids), len(boidguards))
+
+        # Force break after 5 minutes or when there are no more boids or boidguards left
+        if elapsed_time > 300 or (not boids and not boidguards):
+            running = False
+
+        # Update the screen
         pg.display.flip()
         clock.tick(60)
     pg.quit()
 
-    # Plot dei dati raccolti
-    plt.figure(figsize=(10, 6))
-    plt.plot(time_log, boids_log, label="Boids", color="red", linewidth=2)
-    plt.plot(time_log, boidguards_log, label="BoidGuards", color="blue", linewidth=2)
-    plt.xlabel("Time (s)")
-    plt.ylabel("Numero")
-    plt.title("Evolution of number of Boids and BoidGuards")
-    plt.legend()
-    plt.grid()
-    plt.show()
+    with open("./src/results.txt", "a") as f:
+        # Prima colonna: numero iniziale di boids
+        # Seconda colonna: numero iniziale di boidguards * 100
+        # Colonne successive: boids e boidguards a intervalli di tempo
+        f.write(f"{BOIDS},{BOIDGUARDS * 100}," + 
+                ",".join(f"{b},{g}" for val in interval_data.values() if val is not None and len(val) == 2 and (b := val[0]) is not None and (g := val[1]) is not None) + "\n")
+
+
+
+    # Plot data
+    if time_log and boids_log and boidguards_log:
+        plt.figure(figsize=(10, 6))
+        plt.plot(time_log, boids_log, label="Boids", color="red", linewidth=2)
+        plt.plot(time_log, boidguards_log, label="BoidGuards", color="blue", linewidth=2)
+        plt.xlabel("Time (s)")
+        plt.ylabel("Numero")
+        plt.title("Evolution of number of Boids and BoidGuards")
+        plt.legend()
+        plt.grid()
+        plt.show()
+    else: 
+        print("No data to plot")
 
 if __name__ == "__main__":
     WIDTH, HEIGHT, BORDER_COLOR, OBJ_COLOR, MAP, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION = get_config()
