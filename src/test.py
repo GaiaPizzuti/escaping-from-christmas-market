@@ -55,6 +55,14 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
                 print("BoidGuard reached the target")
                 boidguards.remove(boidg)
 
+        dt = clock.tick(60) / 1000  # Secondi trascorsi in questo frame
+        elapsed_time += dt
+
+        # Raccogli i dati
+        time_log.append(elapsed_time)
+        boids_log.append(len(boids))
+        boidguards_log.append(len(boidguards))
+
         # update the screen
         pg.display.flip()
         clock.tick(60)
@@ -62,11 +70,11 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
     # Plot dei dati raccolti
     plt.figure(figsize=(10, 6))
-    plt.plot(time_log, boids_log, label="Boids", color="blue", linewidth=2)
-    plt.plot(time_log, boidguards_log, label="BoidGuards", color="red", linewidth=2)
-    plt.xlabel("Tempo (s)")
+    plt.plot(time_log, boids_log, label="Boids", color="red", linewidth=2)
+    plt.plot(time_log, boidguards_log, label="BoidGuards", color="blue", linewidth=2)
+    plt.xlabel("Time (s)")
     plt.ylabel("Numero")
-    plt.title("Evoluzione del numero di Boids e BoidGuards")
+    plt.title("Evolution of number of Boids and BoidGuards")
     plt.legend()
     plt.grid()
     plt.show()
@@ -74,7 +82,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 if __name__ == "__main__":
     WIDTH, HEIGHT, BORDER_COLOR, OBJ_COLOR, MAP, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION = get_config()
     
-    #Questo l'ho tolto dalla run function
+    
     pg.init()
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     image = pg.image.load(MAP).convert()

@@ -123,11 +123,6 @@ class GuardRules():
             self.velocity += pg.Vector2(0, 0.7)
         
     def move_towards_target(self, target_position):
-        """
-        Modifica la velocità del Boid Guard per avvicinarsi al target.
-
-        :param target_position: pg.Vector2, posizione del target
-        """
         # Calcola la direzione verso il target
         direction = target_position - self.position
         
