@@ -68,7 +68,6 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         boids_log.append(len(boids))
         boidguards_log.append(len(boidguards))
 
-        print(f"Elapsed Time: {elapsed_time}, Interval Keys: {list(interval_data.keys())}")
 
         for t in interval_data.keys():
             if interval_data[t] is None and elapsed_time >= t:
