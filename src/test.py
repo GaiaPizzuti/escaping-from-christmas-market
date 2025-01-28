@@ -68,6 +68,8 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         boids_log.append(len(boids))
         boidguards_log.append(len(boidguards))
 
+        print(f"Elapsed Time: {elapsed_time}, Interval Keys: {list(interval_data.keys())}")
+
         for t in interval_data.keys():
             if interval_data[t] is None and elapsed_time >= t:
                 interval_data[t] = (len(boids), len(boidguards))
@@ -81,14 +83,14 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         clock.tick(60)
     pg.quit()
 
+    print(interval_data)
+
     with open("./src/results.csv", "a") as f:
         # Prima colonna: numero iniziale di boids
         # Seconda colonna: numero iniziale di boidguards * 100
         # Colonne successive: boids e boidguards a intervalli di tempo
         f.write(f"{BOIDS},{BOIDGUARDS}," + 
                 ",".join(f"{b},{g}" for val in interval_data.values() if val is not None and len(val) == 2 and (b := val[0]) is not None and (g := val[1]) is not None) + "\n")
-
-
 
     # Plot data
     if time_log and boids_log and boidguards_log:

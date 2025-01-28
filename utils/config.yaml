@@ -1,8 +1,8 @@
 image: 
   height: 720
   width: 557
-  #path: "./data/Map_WO_obstacle.jpg"
-  path: "./data/Map_WITH_obstacle.jpg"
+  #path: "./data/Map_WO_obstacle.png"
+  path: "./data/Map_WITH_obstacle.png"
 
 color: 
   obstacle: (0, 0, 0, 255) 
