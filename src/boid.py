@@ -50,7 +50,6 @@ class Boid(Rules):
         pg.draw.circle(screen, 'red', self.position, 5)
     
     def avoid_obstacles(self):
-        # base direction
         avoidance_force = pg.Vector2(0, 0)
 
         # check the other directions

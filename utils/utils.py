@@ -1,7 +1,7 @@
 import yaml
 import sys
 import pygame as pg
-
+import matplotlib.pyplot as plt
 
 def find_target_positions(screen, target_color, WIDTH, HEIGHT):
     target_positions = []
@@ -34,3 +34,14 @@ def get_config():
     SEPARATION = config["parameters"]["separation"]
     
     return WIDTH, HEIGHT, BORDER_COLOR, OBJ_COLOR, MAP, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION
+
+def plot_boids_data(time_log, boids_log, boidguards_log):
+    plt.figure(figsize=(10, 6))
+    plt.plot(time_log, boids_log, label="Boids", color="red", linewidth=2)
+    plt.plot(time_log, boidguards_log, label="BoidGuards", color="blue", linewidth=2)
+    plt.xlabel("Time (s)")
+    plt.ylabel("Number")
+    plt.title("Evolution of number of Boids and BoidGuards")
+    plt.legend()
+    plt.grid()
+    plt.show()

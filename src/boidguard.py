@@ -57,37 +57,28 @@ class BoidGuard(GuardRules):
     
     def update(self, boidguards, target_positions):
         if not target_positions:
-            #print("No target found")
-            return  # Esci dalla funzione se non ci sono target
+            print("No target found")
+            return  
 
-        # Trova il target più vicino
         closest_target = min(target_positions, key=lambda pos: (self.position - pos).length())
 
-        # Calcola la direzione verso il target più vicino
         direction = closest_target - self.position
 
-        # Normalizza la direzione per ottenere un vettore unitario
         if direction.length() != 0:
             direction = direction.normalize()
 
-        # Aggiorna la velocità, scalata da un fattore di velocità
-        speed_factor = 2  # Velocità di movimento del Boid Guard
+        speed_factor = 2  
         self.velocity += direction * speed_factor
 
-        # Limita la velocità per evitare movimenti eccessivi
         max_speed = 0.5
         if self.velocity.length() > max_speed:
             self.velocity = self.velocity.normalize() * max_speed
 
-        # Limita la velocità
         self.velocity.scale_to_length(0.3)
 
-        # Aggiorna la posizione
         self.position += self.velocity
 
-        # wrap the position of the boid
         GuardRules.bound_position(self)
-
 
         if self.is_green(self.position):
             self.reached = True

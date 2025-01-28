@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 from boid import Boid
 from boidguard import BoidGuard
-from utils.utils import get_config, find_target_positions
+from utils.utils import get_config, find_target_positions, plot_boids_data
 
 
 def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGET):
@@ -93,15 +93,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
     # Plot data
     if time_log and boids_log and boidguards_log:
-        plt.figure(figsize=(10, 6))
-        plt.plot(time_log, boids_log, label="Boids", color="red", linewidth=2)
-        plt.plot(time_log, boidguards_log, label="BoidGuards", color="blue", linewidth=2)
-        plt.xlabel("Time (s)")
-        plt.ylabel("Numero")
-        plt.title("Evolution of number of Boids and BoidGuards")
-        plt.legend()
-        plt.grid()
-        plt.show()
+        plot_boids_data(time_log, boids_log, boidguards_log)
     else: 
         print("No data to plot")
 
