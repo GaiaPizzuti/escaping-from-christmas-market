@@ -79,11 +79,14 @@ class Boid(Rules):
         if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
             return self.image.get_at((int(position.x), int(position.y))) == pg.Color(BLACK)
         return False
-    
+
     def is_green(self, position):
-        return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
+        if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
+            return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
+        return False
+
     
-    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION):
+    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached):
         
         # boid in the range
         neighbors = Rules.find_neighbors(self, boids, boidguards)
@@ -100,8 +103,11 @@ class Boid(Rules):
         
         next_velocity = self.velocity + alignment + cohesion + separation       
         possible_position = self.position + next_velocity
+        direction2 = Rules.tend_to_place(self,green_reached)
+        possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
 
-        if self.is_any_black(possible_position):
+
+        if self.is_black(possible_position):
             # avoid obstacles
             avoidance_force = self.avoid_obstacles()
             next_velocity += avoidance_force
@@ -109,7 +115,11 @@ class Boid(Rules):
         # update velocity
         self.velocity = next_velocity
 
+        if self.is_black(possible_position2) == False and self.position != possible_position2:
+            self.velocity = direction2
+
         # limit the speed of the boids
+        #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
         if self.velocity.length() > 2:
             self.velocity.scale_to_length(2)
         
@@ -119,6 +129,12 @@ class Boid(Rules):
         # wrap the position of the boid
         Rules.bound_position(self)
 
+        desired_position = None
+
         if self.is_green(self.position):
+            desired_position = self.position ######### INPUT of tend_to_place()
             print("Target reached")
             self.reached = True
+            self.velocity = pg.Vector2(0, 0)
+        
+        return desired_position
