@@ -43,10 +43,35 @@ class BoidGuard(GuardRules):
     
     def draw(self, screen):
         pg.draw.circle(screen, 'blue', self.position, 5)
+    
+    def avoid_obstacles(self):
+        avoidance_force = pg.Vector2(0, 0)
+
+        # check the other directions
+        for angle in range(0, 360, 45):
+            direction = self.velocity.rotate(angle)
+            check_position = self.position + direction.normalize() * self.radius
+
+            if self.is_black(check_position):
+                # invert the direction to avoid the obstacle
+                avoidance_force += -direction
+        
+        return avoidance_force
 
     def is_black(self, position):
         if position.x > 0 and position.y > 0 and position.x < self.width - 100 and position.y < self.height - 100:
             return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
+        return False
+
+    def is_any_black(self, position):
+        
+        direction = (self.position - position).normalize()
+        distance = int(self.position.distance_to(position))
+
+        for i in range(distance):
+            check_position = self.position + direction * i
+            if self.is_black(check_position):
+                return True
         return False
     
     def is_green(self, position):
@@ -57,35 +82,38 @@ class BoidGuard(GuardRules):
     
     def update(self, boidguards, target_positions):
         if not target_positions:
-            print("No target found")
-            return  
+            #print("No target found")
+            return  # Esci dalla funzione se non ci sono target
 
+        # Trova il target più vicino
         closest_target = min(target_positions, key=lambda pos: (self.position - pos).length())
 
+        # Calcola la direzione verso il target più vicino
         direction = closest_target - self.position
 
+        # Normalizza la direzione per ottenere un vettore unitario
         if direction.length() != 0:
             direction = direction.normalize()
 
-        speed_factor = 2  
+        # Aggiorna la velocità, scalata da un fattore di velocità
+        speed_factor = 2  # Velocità di movimento del Boid Guard
         self.velocity += direction * speed_factor
 
-        max_speed = 0.5
-        if self.velocity.length() > max_speed:
-            self.velocity = self.velocity.normalize() * max_speed
+        # Limita la velocità
+        if self.velocity.length() > 2:
+            self.velocity.scale_to_length(2)
+        
+        # Aggiorna la posizione
+        if self.is_any_black(self.position + self.velocity):
+            avoid = self.avoid_obstacles()
+            self.velocity += avoid
 
-        self.velocity.scale_to_length(0.3)
-
+        
         self.position += self.velocity
 
+        # wrap the position of the boid
         GuardRules.bound_position(self)
-        
-        desired_position = None
+
 
         if self.is_green(self.position):
-            desired_position = self.position ######### INPUT of tend_to_place()
-            print("Target reached")
             self.reached = True
-            self.velocity = pg.Vector2(0, 0)
-        
-        return desired_position
