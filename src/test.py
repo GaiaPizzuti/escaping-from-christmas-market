@@ -60,7 +60,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
                 print("BoidGuard reached the target")
                 boidguards.remove(boidg)
 
-        dt = clock.tick(60) / 1000  # Secondi trascorsi in questo frame
+        dt = clock.tick(60) / 1000  
         elapsed_time += dt
 
         # Collect data
@@ -81,11 +81,11 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         clock.tick(60)
     pg.quit()
 
-    with open("./src/results.txt", "a") as f:
+    with open("./src/results.csv", "a") as f:
         # Prima colonna: numero iniziale di boids
         # Seconda colonna: numero iniziale di boidguards * 100
         # Colonne successive: boids e boidguards a intervalli di tempo
-        f.write(f"{BOIDS},{BOIDGUARDS * 100}," + 
+        f.write(f"{BOIDS},{BOIDGUARDS}," + 
                 ",".join(f"{b},{g}" for val in interval_data.values() if val is not None and len(val) == 2 and (b := val[0]) is not None and (g := val[1]) is not None) + "\n")
 
 
