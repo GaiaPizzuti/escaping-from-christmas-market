@@ -39,6 +39,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
     }
 
     running = True
+    greens_reached = list()
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -46,7 +47,6 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
         # reset the initial map
         screen.blit(image, (0, 0))
-        greens_reached = list()
 
         for boid in boids:
             boid.draw(screen)
@@ -56,7 +56,6 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
             
 
             if boid.reached:
-                print("Boid reached the target")
                 boids.remove(boid)
             
 
@@ -66,7 +65,6 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
             if position_reached != None:
                 greens_reached.append(position_reached)
             if boidg.reached:
-                print("BoidGuard reached the target")
                 boidguards.remove(boidg)
 
         dt = clock.tick(60) / 1000  
