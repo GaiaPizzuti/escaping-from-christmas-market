@@ -21,7 +21,7 @@ people:
    num: 500
 
 security:
-   percentage: 0
+   percentage: 0.02
    # can be 0.01 or 0.02 or 0.03 or 0.04 or 0.05
 
 

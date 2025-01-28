@@ -17,33 +17,33 @@ class Rules():
             if boid.position != self.position:
                 if self.position.distance_to(boid.position) < self.radius:
                     neighbors.append(boid)
-
-        for boidg in boidguards:
-            if boidg.position != self.position:
-                if self.position.distance_to(boidg.position) < self.radius:
-                    neighbors.append(boidg)
-
         return neighbors
 
     def find_neighbors_boidguards(self,boidguards):
         neighborsguard = []
         for boidg in boidguards:
             if boidg.position != self.position:
-                if self.position.distance_to(boidg.position) < self.radius:
+                if self.position.distance_to(boidg.position) < self.GuardRadius:
                     neighborsguard.append(boidg)
         return neighborsguard
     
     # alignment, ants try to match the velocity of their neighbors
     def match_velocity(self, boids, boidguards):
+
         velocity = pg.Vector2(0, 0)
+        velocityg = pg.Vector2(0, 0)
         k = self.discipline
 
         for boid in boids:
             velocity += boid.velocity
         for guards in boidguards:
-            velocity += guards.velocity*k
+            velocityg += guards.velocity
+
         if len(boids) > 1:
-            velocity /= (len(boids) + len(boidguards)*k)
+            velocity /= (len(boids))
+            if len(boidguards) > 1:
+                velocityg /= (len(boidguards))
+            velocity = (velocity*(1-k)+velocityg*k)
             return (velocity - self.velocity) / 8
         return pg.Vector2(0, 0)
     
