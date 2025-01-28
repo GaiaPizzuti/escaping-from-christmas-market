@@ -38,8 +38,10 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         180: None, 210: None, 240: None, 270: None, 300: None
     }
 
+    count=0
     running = True
     while running:
+        count+=1
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
@@ -79,24 +81,22 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
 
         for t in interval_data.keys():
-            if interval_data[t] is None and elapsed_time >= t:
+            if interval_data[t] is None and count == (2*t):
                 interval_data[t] = (len(boids), len(boidguards))
-
-        # Force break after 5 minutes or when there are no more boids or boidguards left
-        if elapsed_time > 300 or (not boids and not boidguards):
-            running = False
 
         # Update the screen
         pg.display.flip()
         clock.tick(60)
+
+        # Force break after 5 minutes or when there are no more boids or boidguards left
+        if count == 600 or (not boids and not boidguards):
+            running = False
+
     pg.quit()
 
     print(interval_data)
 
     with open("./src/results.csv", "a") as f:
-        # Prima colonna: numero iniziale di boids
-        # Seconda colonna: numero iniziale di boidguards * 100
-        # Colonne successive: boids e boidguards a intervalli di tempo
         f.write(f"{BOIDS},{BOIDGUARDS}," + 
                 ",".join(f"{b},{g}" for val in interval_data.values() if val is not None and len(val) == 2 and (b := val[0]) is not None and (g := val[1]) is not None) + "\n")
 
@@ -105,6 +105,8 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         plot_boids_data(time_log, boids_log, boidguards_log)
     else: 
         print("No data to plot")
+
+
 
 if __name__ == "__main__":
     WIDTH, HEIGHT, BORDER_COLOR, OBJ_COLOR, MAP, BOIDS, BOIDGUARDS, ALIGNMENT, COHESION, SEPARATION = get_config()
