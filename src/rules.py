@@ -68,11 +68,11 @@ class Rules():
     def tend_to_place(self,green_reached,step_size=10):
         if green_reached:
             dist = [self.position.distance_to(pg.Vector2(green_position)) for green_position in green_reached]
-            if min(dist) < self.radius:
+            if min(dist) < self.radius*4:
                 best_position = green_reached[dist.index(min(dist))]
-                updated_velocity = (best_position - self.position) * (step_size / 100)
-                print(f"Adjusting velocity towards desired_position {best_position}, updated_velocity: {updated_velocity}")
-                return updated_velocity
+                updated_direction = best_position - self.position 
+                print(f"Adjusting velocity towards desired_position {best_position}, updated_velocity: {updated_direction}")
+                return updated_direction
         else:
             return None
     

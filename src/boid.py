@@ -103,8 +103,8 @@ class Boid(Rules):
         
         next_velocity = self.velocity + alignment + cohesion + separation       
         possible_position = self.position + next_velocity
-        next_velocity2 = Rules.tend_to_place(self,green_reached)
-        possible_position2 = self.position + (next_velocity2 or pg.Vector2(0,0))
+        direction2 = Rules.tend_to_place(self,green_reached)
+        possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
 
 
         if self.is_black(possible_position):
@@ -116,7 +116,7 @@ class Boid(Rules):
         self.velocity = next_velocity
 
         if self.is_black(possible_position2) == False and self.position != possible_position2:
-            self.velocity = next_velocity2
+            self.velocity = direction2
 
         # limit the speed of the boids
         #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
