@@ -14,14 +14,14 @@ color:
 
 parameters:
   alignment: 0.5
-  cohesion: 0.5
-  separation: 0.5
+  cohesion: 0.3
+  separation: 0.8
   
 people:
-   num: 100
+   num: 1000
 
 security:
-   percentage: 0.01
+   percentage: 0
    # can be 0.01 or 0.02 or 0.03 or 0.04 or 0.05
 
 

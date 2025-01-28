@@ -9,6 +9,8 @@ from boid import Boid
 from boidguard import BoidGuard
 from utils.utils import get_config, find_target_positions, plot_boids_data
 
+step_size = 10
+
 
 def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGET):
     pg.init()
@@ -44,18 +46,25 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
         # reset the initial map
         screen.blit(image, (0, 0))
+        greens_reached = list()
 
         for boid in boids:
             boid.draw(screen)
-            boid.update(boids, boidguards, alignment, cohesion, separation)
+            position_reached = boid.update(boids, boidguards, alignment, cohesion, separation, greens_reached)
+            if position_reached != None:
+                greens_reached.append(position_reached)
+            
+
             if boid.reached:
                 print("Boid reached the target")
                 boids.remove(boid)
-
+            
 
         for boidg in boidguards:
             boidg.draw(screen)
-            boidg.update(boidguards, TARGET)
+            position_reached = boidg.update(boidguards, TARGET)
+            if position_reached != None:
+                greens_reached.append(position_reached)
             if boidg.reached:
                 print("BoidGuard reached the target")
                 boidguards.remove(boidg)

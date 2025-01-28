@@ -79,6 +79,13 @@ class BoidGuard(GuardRules):
         self.position += self.velocity
 
         GuardRules.bound_position(self)
+        
+        desired_position = None
 
         if self.is_green(self.position):
+            desired_position = self.position ######### INPUT of tend_to_place()
+            print("Target reached")
             self.reached = True
+            self.velocity = pg.Vector2(0, 0)
+        
+        return desired_position
