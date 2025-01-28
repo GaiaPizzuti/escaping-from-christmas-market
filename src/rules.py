@@ -8,6 +8,7 @@ class Rules():
         self.width = WIDTH
         self.height = HEIGHT
 
+
     # boid rules
 
     def find_neighbors(self, boids, boidguards):
@@ -63,6 +64,17 @@ class Rules():
                 if (boid.position - self.position).length() < range:
                     distance = distance - (boid.position - self.position)
         return distance
+    
+    def tend_to_place(self,green_reached,step_size=10):
+        if green_reached:
+            dist = [self.position.distance_to(pg.Vector2(green_position)) for green_position in green_reached]
+            if min(dist) < self.radius:
+                best_position = green_reached[dist.index(min(dist))]
+                updated_velocity = (best_position - self.position) * (step_size / 100)
+                print(f"Adjusting velocity towards desired_position {best_position}, updated_velocity: {updated_velocity}")
+                return updated_velocity
+        else:
+            return None
     
     # bound the boids to the screen. Change the velocity when they reach margin
     def bound_position(self, margin=100):
