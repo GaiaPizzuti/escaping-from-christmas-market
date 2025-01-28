@@ -31,9 +31,11 @@ class Boid(Rules):
 
         # radius of the boid
         self.radius = 50
+        self.GuardRadius = 100
+        self.TargetRadius = 30
 
         # set discipline
-        self.discipline = np.random.gamma(shape=2, scale=2)
+        self.discipline = np.random.uniform(0.7,0.9)
 
         # boolean to check if the boid has reached the target
         self.reached = False
