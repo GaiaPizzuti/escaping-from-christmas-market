@@ -108,7 +108,7 @@ class Boid(Rules):
         possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
 
 
-        if self.is_black(possible_position):
+        if self.is_any_black(possible_position):
             # avoid obstacles
             avoidance_force = self.avoid_obstacles()
             next_velocity += avoidance_force
@@ -116,7 +116,7 @@ class Boid(Rules):
         # update velocity
         self.velocity = next_velocity
 
-        if self.is_black(possible_position2) == False and self.position != possible_position2:
+        if self.is_any_black(possible_position2) == False and self.position != possible_position2:
             self.velocity = direction2
 
         # limit the speed of the boids
