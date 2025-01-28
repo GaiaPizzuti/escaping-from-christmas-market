@@ -106,6 +106,7 @@ class Boid(Rules):
         next_velocity2 = Rules.tend_to_place(self,green_reached)
         possible_position2 = self.position + (next_velocity2 or pg.Vector2(0,0))
 
+
         if self.is_black(possible_position):
             # avoid obstacles
             avoidance_force = self.avoid_obstacles()
@@ -119,7 +120,7 @@ class Boid(Rules):
 
         # limit the speed of the boids
         #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
-        if len(self.velocity) > 2:
+        if self.velocity.length() > 2:
             self.velocity.scale_to_length(2)
         
         # update position
