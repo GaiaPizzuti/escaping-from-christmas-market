@@ -56,7 +56,6 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
             if position_reached != None:
                 greens_reached.append(position_reached)
             
-
             if boid.reached:
                 boids.remove(boid)
             

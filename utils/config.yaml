@@ -18,7 +18,7 @@ parameters:
   separation: 0.8
   
 people:
-   num: 200
+   num: 20
 
 security:
    percentage: 0.05

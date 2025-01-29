@@ -89,10 +89,8 @@ class Boid(Rules):
             return self.image.get_at((int(position.x), int(position.y))) == pg.Color(BLACK)
         return False
 
-    def is_green(self, position):
-        if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
-            return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
-        return False
+    def is_green(self):
+        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color(GREEN)
 
     
     def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached, TARGET):
@@ -116,8 +114,7 @@ class Boid(Rules):
                 direction = direction.normalize()
 
             # Aggiorna la velocità, scalata da un fattore di velocità
-            speed_factor = 2  # Velocità di movimento del Boid 
-            self.velocity += direction * speed_factor
+            self.velocity += direction
 
         else:
 
@@ -153,7 +150,7 @@ class Boid(Rules):
 
         desired_position = None
 
-        if self.is_green(self.position):
+        if self.is_green():
             desired_position = self.position ######### INPUT of tend_to_place()
             print("Target reached")
             self.reached = True

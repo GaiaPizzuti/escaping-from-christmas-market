@@ -63,19 +63,24 @@ class BoidGuard(GuardRules):
             return self.image.get_at((int(position.x), int(position.y))) == pg.Color('black')
         return False
 
-    def is_any_black(self, position):
-        
-        direction = (self.position - position).normalize()
-        distance = int(self.position.distance_to(position))
+    def is_any_black(self, target_position):
+        direction = target_position - self.position
+        distance = int(direction.length())
 
-        for i in range(distance):
-            check_position = self.position + direction * i
+        if distance == 0:
+            return False
+
+        step = direction.normalize()  
+
+        for i in range(distance + 1):  
+            check_position = self.position + step * i
             if self.is_black(check_position):
-                return True
-        return False
+                return True  
+
+        return False  
     
-    def is_green(self, position):
-        return self.image.get_at((int(position.x), int(position.y))) == pg.Color(GREEN)
+    def is_green(self):
+        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color(GREEN)
     
     def is_border(self, position):
         return position.x < 0 or position.y < 0 or position.x > self.width - 1 or position.y >= self.height - 1
@@ -115,5 +120,5 @@ class BoidGuard(GuardRules):
         GuardRules.bound_position(self)
 
 
-        if self.is_green(self.position):
+        if self.is_green():
             self.reached = True
