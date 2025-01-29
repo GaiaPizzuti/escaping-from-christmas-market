@@ -8,10 +8,20 @@ class Rules():
         self.width = WIDTH
         self.height = HEIGHT
 
+    def find_neighbors(self, boids):
+        """
+        Function to find the neighbors of the boid
 
-    # boid rules
+        Parameters:
+        -----------
+        boids: list
+            list of boids
 
-    def find_neighbors(self, boids, boidguards):
+        Returns:
+        --------
+        list
+            list of neighbors
+        """
         neighbors = []
         for boid in boids:
             if boid.position != self.position:
@@ -19,7 +29,10 @@ class Rules():
                     neighbors.append(boid)
         return neighbors
 
-    def find_neighbors_boidguards(self,boidguards):
+    def find_neighbors_boidguards(self, boidguards):
+        """
+        Function to find the boidguards in the neighborhood of the boid
+        """
         neighborsguard = []
         for boidg in boidguards:
             if boidg.position != self.position:
@@ -27,9 +40,22 @@ class Rules():
                     neighborsguard.append(boidg)
         return neighborsguard
     
-    # alignment
     def match_velocity(self, boids, boidguards):
+        """
+        Alignment rule: boids try to match the velocity of their neighbors
+        
+        Parameters:
+        -----------
+        boids: list
+            list of boids
+        boidguards: list
+            list of boidguards
 
+        Returns:
+        --------
+        pg.Vector2
+            the updated velocity
+        """
         velocity = pg.Vector2(0, 0)
         velocityg = pg.Vector2(0, 0)
         k = self.discipline
@@ -47,9 +73,21 @@ class Rules():
             return (velocity - self.velocity) / 8
         
         return pg.Vector2(0, 0)
-    
-    # cohesion
+
     def fly_towards_center(self, boids):
+        """
+        Cohesion rule: boids try to fly towards the center of mass of neighboring boids
+
+        Parameters:
+        -----------
+        boids: list
+            list of boids
+        
+        Returns:
+        --------
+        pg.Vector2
+            the updated direction
+        """
         center = pg.Vector2(0, 0)
         for boid in boids:
             if boid.position != self.position:
@@ -57,8 +95,22 @@ class Rules():
             return (center - self.position) / 100
         return pg.Vector2(0, 0)
 
-    # separation
     def keep_distance_away(self, boids, range=9):
+        """
+        Separation rule: boids try to keep a small distance away from other objects (boids, obstacles)
+
+        Parameters:
+        -----------
+        boids: list
+            list of boids
+        range: int
+            the range of the separation
+        
+        Returns:
+        --------
+        pg.Vector2
+            the updated direction
+        """
         distance = pg.Vector2()
         for boid in boids:
             if boid.position != self.position:
@@ -66,7 +118,8 @@ class Rules():
                     distance = distance - (boid.position - self.position)
         return distance
     
-    def tend_to_place(self,green_reached,step_size=10):
+    # mai usata
+    def tend_to_place(self,green_reached):
         if green_reached:
             dist = [self.position.distance_to(pg.Vector2(green_position)) for green_position in green_reached]
             if min(dist) < self.radius*3:
@@ -76,8 +129,15 @@ class Rules():
         else:
             return None
     
-    # bound the boids to the screen. Change the velocity when they reach margin
     def bound_position(self, margin=100):
+        """
+        Function to bound the boids to the screen. Change the velocity when they reach margin
+
+        Parameters:
+        -----------
+        margin: int
+            the margin of the screen
+        """
         if self.position.x > self.width - margin:
             self.velocity += pg.Vector2(-0.7, 0)
         if self.position.x < margin:
@@ -95,9 +155,20 @@ class GuardRules():
         self.width = WIDTH
         self.height = HEIGHT
 
-    # ant rules
-
     def find_neighbors(self, boids):
+        """
+        Function to find the neighbors of the boid
+
+        Parameters:
+        -----------
+        boids: list
+            list of boids
+
+        Returns:
+        --------
+        list
+            list of neighbors
+        """
         neighbors = []
         for boid in boids:
             if boid.position != self.position:
@@ -105,26 +176,15 @@ class GuardRules():
                     neighbors.append(boid)
         return neighbors
     
-    # cohesion, boids try to fly towards the center of mass of neighboring boids
-    def fly_towards_center(self, boids):
-        center = pg.Vector2(0, 0)
-        for boid in boids:
-            if boid.position != self.position:
-                center += boid.position
-            return (center - self.position) / 100
-        return pg.Vector2(0, 0)
-
-    # separation, boids try to keep a small distance away from other objects (boids, obstacles)
-    def keep_distance_away(self, boids, range=9):
-        distance = pg.Vector2()
-        for boid in boids:
-            if boid.position != self.position:
-                if (boid.position - self.position).length() < range:
-                    distance = distance - (boid.position - self.position)
-        return distance
-    
-    # bound the boids to the screen. Change the velocity when they reach margin
     def bound_position(self, margin=100):
+        """
+        Function to bound the boids to the screen. Change the velocity when they reach margin
+
+        Parameters:
+        -----------
+        margin: int
+            the margin of the screen
+        """
         if self.position.x > self.width - margin:
             self.velocity += pg.Vector2(-0.7, 0)
         if self.position.x < margin:
@@ -135,18 +195,29 @@ class GuardRules():
             self.velocity += pg.Vector2(0, 0.7)
         
     def move_towards_target(self, target_position):
-        # Calcola la direzione verso il target
+        """
+        Function to move the boid towards the target
+
+        Parameters:
+        -----------
+        target_position: pg.Vector2
+            the position of the target
+
+        Returns:
+        --------
+        pg.Vector2
+            the updated velocity
+        """
+        # calculate the direction to the target
         direction = target_position - self.position
-        
-        # Normalizza la direzione per ottenere un vettore unitario
         if direction.length() != 0:
             direction = direction.normalize()
         
-        # Aggiorna la velocità, scalata da un fattore di velocità
-        speed_factor = 2  # Velocità di movimento del Boid Guard
+        # update the velocity
+        speed_factor = 2
         self.velocity += direction * speed_factor
 
-        # Limita la velocità per evitare movimenti eccessivi
+        # limit the speed of the boidguard
         max_speed = 5
         if self.velocity.length() > max_speed:
             self.velocity = self.velocity.normalize() * max_speed

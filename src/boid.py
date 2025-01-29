@@ -1,17 +1,18 @@
 import pygame as pg
 import random
 import numpy as np
-from rules import Rules
-import sys
 import yaml
+import sys
+
+from rules import Rules
 
 sys.path.append(".")
-with open("utils/config.yaml", "r") as f:
-    config = yaml.safe_load(f)
+with open("utils/config.yaml", "r") as file:
+    config = yaml.safe_load(file)
 
 MAP = config["image"]["path"]
 GREEN = config["color"]["target-hex"]
-BLACK = config["color"]["obstacle-hex"]
+BLACK = config["color"]["border-hex"]
 
 class Boid(Rules):
 
@@ -29,9 +30,13 @@ class Boid(Rules):
         # initial random velocity of the boid
         self.velocity = pg.Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
 
-        # radius of the boid
+        # radius to see the other boids
         self.radius = 50
+
+        # radius to see the other boidguards
         self.GuardRadius = 100
+
+        # radius to see the target
         self.TargetRadius = 30
 
         # set discipline
@@ -41,17 +46,35 @@ class Boid(Rules):
         self.reached = False
     
     def set_position(self):
+        """
+        create a random position and check if the pixel is white
+
+        Returns:
+        -------
+        pg.Vector2
+            the position of the boid
+        """
         position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
         
-        # check if the pixel is white
         while self.image.get_at((int(position.x), int(position.y))) != pg.Color('white'):
             position = pg.Vector2(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
         return position
 
     def draw(self, screen):
+        """
+        draw the boid on the screen with a red circle of radius 4
+        """
         pg.draw.circle(screen, 'red', self.position, 4)
     
     def avoid_obstacles(self):
+        """
+        Function to avoid obstacles and search a new possibile direction by rotating the velocity
+
+        Returns:
+        -------
+        pg.Vector2
+            the new direction to avoid obstacles
+        """
         avoidance_force = pg.Vector2(0, 0)
 
         # check the other directions
@@ -63,11 +86,24 @@ class Boid(Rules):
 
             if self.is_black(check_position):
                 # invert the direction to avoid the obstacle
-                avoidance_force += -direction
+                avoidance_force -= direction
         
         return avoidance_force
     
     def is_any_black(self, target_position):
+        """
+        Function to check if there is a black pixel in the path of the boid
+
+        Parameters:
+        ----------
+        target_position : pg.Vector2
+            the position of the target
+        
+        Returns:
+        -------
+        bool
+            True if there is a black pixel in the path of the boid, False otherwise
+        """
         direction = target_position - self.position
         distance = int(direction.length())
 
@@ -83,77 +119,144 @@ class Boid(Rules):
 
         return False  
 
-
     def is_black(self, position):
+        """
+        Function to check if the pixel is black
+
+        Parameters:
+        ----------
+        position : pg.Vector2
+            the position of the pixel
+        
+        Returns:
+        -------
+        bool
+            True if the pixel is black, False otherwise
+        """
         if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
             return self.image.get_at((int(position.x), int(position.y))) == pg.Color(BLACK)
         return False
 
     def is_green(self):
+        """
+        Function to check if the pixel is green
+
+        Returns:
+        -------
+        bool
+            True if the pixel is green, False otherwise
+        """
         return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color(GREEN)
 
-    
-    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached, TARGET):
-        
+
+    def search_target(self, targets, radius):
+        """
+        Function to search a smart point to move
+
+        Parameters:
+        ----------
+        targets : list
+            list of targets
+        radius : int
+            the radius to search the target
+
+        Returns:
+        -------
+        pg.Vector2
+            the position of the target reached
+        """
         closest_target = None
         min_distance = float("inf")
-        nearby_targets = False
 
-        for i in TARGET:
-            distance = self.position.distance_to(i)
-            if distance < self.TargetRadius and distance < min_distance:
-                closest_target = i
+        for target in targets:
+            distance = self.position.distance_to(target)
+            if distance < radius and distance < min_distance:
+                closest_target = target
                 min_distance = distance
-                nearby_targets = True
+        
+        return closest_target
+    
+    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached, TARGET):
+        """
+        Function to update the position of the boid
 
-                
-        if nearby_targets:
+        Parameters:
+        ----------
+        boids : list
+            list of boids
+        boidguards : list
+            list of boidguards
+        ALIGNMENT : float
+            alignment factor
+        COHESION : float
+            cohesion factor
+        SEPARATION : float
+            separation factor
+        green_reached : list
+            list of reached targets
+        TARGET : list
+            list of targets
+
+        Returns:
+        -------
+        pg.Vector2
+            the position of the target reached
+        """
+
+        closest_target = self.search_target(TARGET, self.TargetRadius)
+
+        if closest_target != None:
             direction = closest_target - self.position
 
             if direction.length() != 0:
                 direction = direction.normalize()
 
-            # Aggiorna la velocità, scalata da un fattore di velocità
+            # update the velocity
             self.velocity += direction
+        #elif green_reached:
 
+        #    closest_target = self.search_target(green_reached, self.GuardRadius)
+        #    if closest_target != None:
+        #        direction = closest_target - self.position
+
+        #        if direction.length() != 0:
+        #            direction = direction.normalize()
+
+                # update the velocity
+        #        self.velocity += direction
         else:
+            
+            # find the neighbors
+            neighbors = Rules.find_neighbors(self, boids)
 
-            neighbors = Rules.find_neighbors(self, boids, boidguards)
+            # find the boidguards in the radius
             GUARDneighbors = Rules.find_neighbors_boidguards(self,boidguards)
 
+            # apply the rules
             alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors)
             cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
             separation = SEPARATION * Rules.keep_distance_away(self, neighbors)
             
-            next_velocity = self.velocity + alignment + cohesion + separation       
-            possible_position = self.position + next_velocity
-            #direction2 = Rules.tend_to_place(self,green_reached)
-            #possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
+            # update the velocity
+            next_velocity = self.velocity + alignment + cohesion + separation  
 
+            # check if there is an obstacle in the path     
+            possible_position = self.position + next_velocity
 
             if self.is_any_black(possible_position):
                 next_velocity += self.avoid_obstacles()
                 
             self.velocity = next_velocity
 
-            #if self.is_any_black(possible_position2) == False and self.position != possible_position2:
-            #    self.velocity = direction2
-
         # limit the speed of the boids
-        #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
         if self.velocity.length() > 2:
             self.velocity.scale_to_length(2)
             
         self.position += self.velocity
 
+        # avoid the borders
         Rules.bound_position(self)
 
-        desired_position = None
-
         if self.is_green():
-            desired_position = self.position ######### INPUT of tend_to_place()
-            print("Target reached")
             self.reached = True
-            self.velocity = pg.Vector2(0, 0)
-        
-        return desired_position
+            return self.position

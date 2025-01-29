@@ -10,6 +10,8 @@ def create_file(boids, boidguards, interval_data):
         list of boids
     boidguards: list
         list of boidguards
+    interval_data: dict
+        dictionary containing the data to be written in the file
     """
 
     # directory
@@ -31,7 +33,7 @@ def create_file(boids, boidguards, interval_data):
     # open file
     with open(path, "w") as f:
         # write the headers
-        f.write("time,boids,boidguards")
+        f.write("time(s),boids,boidguards\n")
     
         # write the data
         for time, values in interval_data.items():
