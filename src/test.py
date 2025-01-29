@@ -67,7 +67,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         # boids draw and update
         for boid in boids:
             boid.draw(screen)
-            position_reached = boid.update(boids, boidguards, alignment, cohesion, separation, greens_reached, TARGET)
+            position_reached = boid.update(boids, boidguards, alignment, cohesion, separation, TARGET)
 
             # insert the target in the list of reached targets
             if position_reached != None:

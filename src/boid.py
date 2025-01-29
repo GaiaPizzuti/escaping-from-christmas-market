@@ -37,7 +37,7 @@ class Boid(Rules):
         self.GuardRadius = 100
 
         # radius to see the target
-        self.TargetRadius = 30
+        self.TargetRadius = 50
 
         # set discipline
         self.discipline = np.random.uniform(0.7,0.9)
@@ -146,7 +146,9 @@ class Boid(Rules):
         bool
             True if the pixel is green, False otherwise
         """
-        return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color(GREEN)
+        if self.position.x > 0 and self.position.y > 0 and int(self.position.x) < self.width - 1 and int(self.position.y) < self.height - 1:
+            return self.image.get_at((int(self.position.x), int(self.position.y))) == pg.Color(GREEN)
+        return False
 
 
     def search_target(self, targets, radius):
@@ -176,7 +178,7 @@ class Boid(Rules):
         
         return closest_target
     
-    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached, TARGET):
+    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, TARGET):
         """
         Function to update the position of the boid
 
@@ -213,17 +215,6 @@ class Boid(Rules):
 
             # update the velocity
             self.velocity += direction
-        #elif green_reached:
-
-        #    closest_target = self.search_target(green_reached, self.GuardRadius)
-        #    if closest_target != None:
-        #        direction = closest_target - self.position
-
-        #        if direction.length() != 0:
-        #            direction = direction.normalize()
-
-                # update the velocity
-        #        self.velocity += direction
         else:
             
             # find the neighbors
@@ -250,7 +241,7 @@ class Boid(Rules):
 
         # limit the speed of the boids
         if self.velocity.length() > 2:
-            self.velocity.scale_to_length(2)
+            self.velocity.scale_to_length(4)
             
         self.position += self.velocity
 
