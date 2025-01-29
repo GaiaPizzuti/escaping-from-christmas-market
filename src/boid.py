@@ -91,13 +91,17 @@ class Boid(Rules):
     
     def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached, TARGET):
         
+        closest_target = None
+        min_distance = float("inf")
         nearby_targets = False
 
         for i in TARGET:
-            if self.position.distance_to(i) < self.TargetRadius:
+            distance = self.position.distance_to(i)
+            if distance < self.TargetRadius and distance < min_distance:
                 closest_target = i
+                min_distance = distance
                 nearby_targets = True
-                break
+
                 
         if nearby_targets:
             direction = closest_target - self.position
