@@ -51,19 +51,21 @@ class Boid(Rules):
     def draw(self, screen):
         pg.draw.circle(screen, 'red', self.position, 4)
     
-    def avoid_obstacles(self, next_velocity):
-        
-        for angle in range(0, 360, 15):
-            rotated_velocity = next_velocity.rotate(angle)
-            if rotated_velocity.length() != 0:
-                rotated_velocity = rotated_velocity.normalize()
-                check_position = self.position + rotated_velocity
+    def avoid_obstacles(self):
+        avoidance_force = pg.Vector2(0, 0)
 
-                if not self.is_any_black(check_position):
-                    return rotated_velocity
-                    
+        # check the other directions
+        for angle in range(0, 360, 45):
+            direction = self.velocity.rotate(angle)
+            if direction.length() != 0:
+                direction = direction.normalize()
+            check_position = self.position + direction * self.radius
+
+            if self.is_black(check_position):
+                # invert the direction to avoid the obstacle
+                avoidance_force += -direction
         
-        return pg.Vector2(0, 0)
+        return avoidance_force
     
     def is_any_black(self, target_position):
         direction = target_position - self.position
@@ -133,7 +135,7 @@ class Boid(Rules):
 
 
             if self.is_any_black(possible_position):
-                next_velocity = self.avoid_obstacles(next_velocity)
+                next_velocity += self.avoid_obstacles()
                 
             self.velocity = next_velocity
 
