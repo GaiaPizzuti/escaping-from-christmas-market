@@ -52,7 +52,7 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
         for boid in boids:
             boid.draw(screen)
-            position_reached = boid.update(boids, boidguards, alignment, cohesion, separation, greens_reached)
+            position_reached = boid.update(boids, boidguards, alignment, cohesion, separation, greens_reached, TARGET)
             if position_reached != None:
                 greens_reached.append(position_reached)
             
@@ -73,9 +73,10 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         elapsed_time += dt
 
         # Collect data
-        time_log.append(elapsed_time)
-        boids_log.append(len(boids))
-        boidguards_log.append(len(boidguards))
+        if count % step_size == 0:
+            time_log.append(count/2)
+            boids_log.append(len(boids))
+            boidguards_log.append(len(boidguards))
 
 
         for t in interval_data.keys():

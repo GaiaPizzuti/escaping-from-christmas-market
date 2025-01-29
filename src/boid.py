@@ -87,55 +87,65 @@ class Boid(Rules):
         return False
 
     
-    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached):
+    def update(self, boids, boidguards, ALIGNMENT, COHESION, SEPARATION, green_reached, TARGET):
         
-        # boid in the range
-        neighbors = Rules.find_neighbors(self, boids, boidguards)
+        nearby_targets = False
 
-        # boidguards in range
-        GUARDneighbors = Rules.find_neighbors_boidguards(self,boidguards)
+        for i in TARGET:
+            if self.position.distance_to(i) < self.TargetRadius:
+                closest_target = i
+                nearby_targets = True
+                break
+                
+        if nearby_targets:
+            pass
 
-        # alignment
-        alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors)
-        # cohesion
-        cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
-        # separation
-        separation = SEPARATION * Rules.keep_distance_away(self, neighbors)
-        
-        next_velocity = self.velocity + alignment + cohesion + separation       
-        possible_position = self.position + next_velocity
-        direction2 = Rules.tend_to_place(self,green_reached)
-        possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
+        else:
+
+            if self.position.distance_to(TARGET) < self.radius:
+                        neighbors.append(boid)
+
+            neighbors = Rules.find_neighbors(self, boids, boidguards)
+            GUARDneighbors = Rules.find_neighbors_boidguards(self,boidguards)
+
+            alignment = ALIGNMENT * Rules.match_velocity(self, neighbors, GUARDneighbors)
+            cohesion = COHESION * Rules.fly_towards_center(self, neighbors)
+            separation = SEPARATION * Rules.keep_distance_away(self, neighbors)
+            
+            next_velocity = self.velocity + alignment + cohesion + separation       
+            possible_position = self.position + next_velocity
+            direction2 = Rules.tend_to_place(self,green_reached)
+            possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
 
 
-        if self.is_any_black(possible_position):
-            # avoid obstacles
-            avoidance_force = self.avoid_obstacles()
-            next_velocity += avoidance_force
+            if self.is_any_black(possible_position):
+                # avoid obstacles
+                avoidance_force = self.avoid_obstacles()
+                next_velocity += avoidance_force
 
-        # update velocity
-        self.velocity = next_velocity
+            # update velocity
+            self.velocity = next_velocity
 
-        if self.is_any_black(possible_position2) == False and self.position != possible_position2:
-            self.velocity = direction2
+            if self.is_any_black(possible_position2) == False and self.position != possible_position2:
+                self.velocity = direction2
 
-        # limit the speed of the boids
-        #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
-        if self.velocity.length() > 2:
-            self.velocity.scale_to_length(2)
-        
-        # update position
-        self.position += self.velocity
+            # limit the speed of the boids
+            #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
+            if self.velocity.length() > 2:
+                self.velocity.scale_to_length(2)
+            
+            # update position
+            self.position += self.velocity
 
-        # wrap the position of the boid
-        Rules.bound_position(self)
+            # wrap the position of the boid
+            Rules.bound_position(self)
 
-        desired_position = None
+            desired_position = None
 
-        if self.is_green(self.position):
-            desired_position = self.position ######### INPUT of tend_to_place()
-            print("Target reached")
-            self.reached = True
-            self.velocity = pg.Vector2(0, 0)
+            if self.is_green(self.position):
+                desired_position = self.position ######### INPUT of tend_to_place()
+                print("Target reached")
+                self.reached = True
+                self.velocity = pg.Vector2(0, 0)
         
         return desired_position

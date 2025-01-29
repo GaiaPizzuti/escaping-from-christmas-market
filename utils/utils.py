@@ -10,7 +10,6 @@ def find_target_positions(screen, target_color, WIDTH, HEIGHT):
         for y in range(HEIGHT):
             if screen.get_at((x, y)) == pg.Color(target_color):
                 target_positions.append((x, y))
-    #print(target_positions)
     return target_positions
 
 

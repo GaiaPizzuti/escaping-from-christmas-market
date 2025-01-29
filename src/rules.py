@@ -27,7 +27,7 @@ class Rules():
                     neighborsguard.append(boidg)
         return neighborsguard
     
-    # alignment, ants try to match the velocity of their neighbors
+    # alignment
     def match_velocity(self, boids, boidguards):
 
         velocity = pg.Vector2(0, 0)
@@ -45,9 +45,10 @@ class Rules():
                 velocityg /= (len(boidguards))
             velocity = (velocity*(1-k)+velocityg*k)
             return (velocity - self.velocity) / 8
+        
         return pg.Vector2(0, 0)
     
-    # cohesion, boids try to fly towards the center of mass of neighboring boids
+    # cohesion
     def fly_towards_center(self, boids):
         center = pg.Vector2(0, 0)
         for boid in boids:
@@ -56,7 +57,7 @@ class Rules():
             return (center - self.position) / 100
         return pg.Vector2(0, 0)
 
-    # separation, boids try to keep a small distance away from other objects (boids, obstacles)
+    # separation
     def keep_distance_away(self, boids, range=9):
         distance = pg.Vector2()
         for boid in boids:
