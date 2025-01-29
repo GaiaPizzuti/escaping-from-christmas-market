@@ -71,7 +71,7 @@ class Boid(Rules):
         
         direction = (self.position - position)
 
-        if direction.length() == 0:
+        if direction.length() != 0:
             direction = direction.normalize()
         distance = int(self.position.distance_to(position))
 
