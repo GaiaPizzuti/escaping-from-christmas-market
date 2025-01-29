@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 from boid import Boid
 from boidguard import BoidGuard
 from utils.utils import get_config, find_target_positions, plot_boids_data
+from utils.create_result import create_file
 
 step_size = 10
-
 
 def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGET):
     pg.init()
@@ -95,16 +95,15 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
 
     print(interval_data)
 
-    with open("./src/results.csv", "a") as f:
-        f.write(f"{BOIDS},{BOIDGUARDS}," + 
-                ",".join(f"{b},{g}" for val in interval_data.values() if val is not None and len(val) == 2 and (b := val[0]) is not None and (g := val[1]) is not None) + "\n")
-
+    
     # Plot data
     if time_log and boids_log and boidguards_log:
         plot_boids_data(time_log, boids_log, boidguards_log)
     else: 
         print("No data to plot")
 
+    # Create result file
+    create_file(BOIDS, BOIDGUARDS, interval_data)
 
 
 if __name__ == "__main__":
