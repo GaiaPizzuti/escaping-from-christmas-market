@@ -69,7 +69,10 @@ class Boid(Rules):
     
     def is_any_black(self, position):
         
-        direction = (self.position - position).normalize()
+        direction = (self.position - position)
+
+        if direction.length() == 0:
+            direction = direction.normalize()
         distance = int(self.position.distance_to(position))
 
         for i in range(distance):
