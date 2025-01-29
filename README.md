@@ -69,14 +69,14 @@ After having completed the configuration process, it is possible to run the simu
    ```
 
 ### Results
-For each run, results are saved in a csv file, inside the 'result' folder (created by  'create_results.py).
-The file is named 'result-[num_boids]-[num-boidguards].csv'. It contains the couples (boids_still_inside , boidguards_still_inside).
+For each run, results are saved in a csv file, inside the  `result ` folder (created by  `create_results.py `).
+The file is named  `result-[num_boids]-[num-boidguards].csv`. It contains the couples (boids_still_inside , boidguards_still_inside).
 These values are recorded every 30 seconds over a total duration of 5 minutes.
 Additionally, a plot is generated showing the number of boids and BoidGuards remaining in the map over time. Below is an example:
 ![Result plot](readME_plot.jpg)
 
 
-## Authors
+### Authors
 This project was created by:
  - Agnese Cervino - [@AgneCer](https://github.com/AgneCer)
  - Maria Amalia Pelle - [@pariamelle](https://github.com/pariamelle)
