@@ -57,7 +57,9 @@ class Boid(Rules):
         # check the other directions
         for angle in range(0, 360, 45):
             direction = self.velocity.rotate(angle)
-            check_position = self.position + direction.normalize() * self.radius
+            if direction.length() != 0:
+                direction = direction.normalize()
+            check_position = self.position + direction * self.radius
 
             if self.is_black(check_position):
                 # invert the direction to avoid the obstacle
