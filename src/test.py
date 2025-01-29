@@ -32,7 +32,17 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
     # dict to store the data that we are going to write in the result file
     interval_data = {
         30: None, 60: None, 90: None, 120: None, 150: None,
-        180: None, 210: None, 240: None, 270: None, 300: None
+        180: None, 210: None, 240: None, 270: None, 300: None,
+        330: None, 360: None, 390: None, 420: None, 450: None,
+        480: None, 510: None, 540: None, 570: None, 600: None,
+        630: None, 660: None, 690: None, 720: None, 750: None,
+        780: None, 810: None, 840: None, 870: None, 900: None,
+        930: None, 960: None, 990: None, 1020: None, 1050: None,
+        1080: None, 1110: None, 1140: None, 1170: None, 1200: None,
+        1230: None, 1260: None, 1290: None, 1320: None, 1350: None,
+        1380: None, 1410: None, 1440: None, 1470: None, 1500: None,
+        1530: None, 1560: None, 1590: None, 1620: None, 1650: None,
+        1680: None, 1710: None, 1740: None, 1770: None, 1800: None,
     }
 
     # frame counter
@@ -92,7 +102,8 @@ def run(WIDTH, HEIGHT, BOIDS, BOIDGUARDS, alignment, cohesion, separation, TARGE
         pg.display.flip()
 
         # force break after 5 simulated minutes or when there are no more boids or boidguards left
-        if count == 600 or (not boids and not boidguards):
+        threshold = BOIDS * 0.05
+        if count == 600 or (len(boids) < threshold):
             running = False
 
     pg.quit()
