@@ -20,7 +20,7 @@ def create_file(boids, boidguards, interval_data):
         os.makedirs(directory)
 
     # file name
-    filename = "result" + len(boids) + "-" + len(boidguards) + ".txt"
+    filename = "result" + "-" + boids + "-" + boidguards + ".txt"
 
     path = os.path.join(directory, filename)
 

@@ -18,10 +18,10 @@ parameters:
   separation: 0.8
   
 people:
-   num: 100
+   num: 200
 
 security:
-   percentage: 0.02
+   percentage: 0.05
    # can be 0.01 or 0.02 or 0.03 or 0.04 or 0.05
 
 

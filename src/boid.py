@@ -49,37 +49,38 @@ class Boid(Rules):
         return position
 
     def draw(self, screen):
-        pg.draw.circle(screen, 'red', self.position, 5)
+        pg.draw.circle(screen, 'red', self.position, 4)
     
-    def avoid_obstacles(self):
-        avoidance_force = pg.Vector2(0, 0)
-
-        # check the other directions
-        for angle in range(0, 360, 45):
-            direction = self.velocity.rotate(angle)
-            if direction.length() != 0:
-                direction = direction.normalize()
-            check_position = self.position + direction * self.radius
-
-            if self.is_black(check_position):
-                # invert the direction to avoid the obstacle
-                avoidance_force += -direction
+    def avoid_obstacles(self, next_velocity):
         
-        return avoidance_force
+        for angle in range(0, 360, 15):
+            rotated_velocity = next_velocity.rotate(angle)
+            if rotated_velocity.length() != 0:
+                rotated_velocity = rotated_velocity.normalize()
+                check_position = self.position + rotated_velocity
+
+                if not self.is_any_black(check_position):
+                    return rotated_velocity
+                    
+        
+        return pg.Vector2(0, 0)
     
-    def is_any_black(self, position):
-        
-        direction = (self.position - position)
+    def is_any_black(self, target_position):
+        direction = target_position - self.position
+        distance = int(direction.length())
 
-        if direction.length() != 0:
-            direction = direction.normalize()
-        distance = int(self.position.distance_to(position))
+        if distance == 0:
+            return False
 
-        for i in range(distance):
-            check_position = self.position + direction * i
+        step = direction.normalize()  
+
+        for i in range(distance + 1):  
+            check_position = self.position + step * i
             if self.is_black(check_position):
-                return True
-        return False
+                return True  
+
+        return False  
+
 
     def is_black(self, position):
         if position.x > 0 and position.y > 0 and int(position.x) < self.width - 100 and int(position.y) < self.height - 100:
@@ -127,18 +128,17 @@ class Boid(Rules):
             
             next_velocity = self.velocity + alignment + cohesion + separation       
             possible_position = self.position + next_velocity
-            direction2 = Rules.tend_to_place(self,green_reached)
-            possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
+            #direction2 = Rules.tend_to_place(self,green_reached)
+            #possible_position2 = self.position + (direction2 or pg.Vector2(0,0))
 
 
             if self.is_any_black(possible_position):
-                avoidance_force = self.avoid_obstacles()
-                next_velocity += avoidance_force
-
+                next_velocity = self.avoid_obstacles(next_velocity)
+                
             self.velocity = next_velocity
 
-            if self.is_any_black(possible_position2) == False and self.position != possible_position2:
-                self.velocity = direction2
+            #if self.is_any_black(possible_position2) == False and self.position != possible_position2:
+            #    self.velocity = direction2
 
         # limit the speed of the boids
         #if np.linalg.norm(self.velocity) > 0:self.velocity = self.velocity / np.linalg.norm(self.velocity) * 2
